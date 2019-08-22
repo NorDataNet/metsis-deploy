@@ -1,0 +1,102 @@
+version: '3.7'
+services:
+  solr:
+    container_name: metsis_solr
+    image: epinux/metsis-solr
+    environment:
+      VIRTUAL_HOST: ${SOLR_VIRTUAL_HOST}
+      VIRTUAL_PORT: 8983
+      NETWORK_ACCESS: internal
+      LETSENCRYPT_HOST: ${SOLR_VIRTUAL_HOST}
+      LETSENCRYPT_MAIL: ${MY_EMAIL}
+    ports:
+      - "8983:8983"
+    volumes:
+      - solr_data:/var/solr/data
+    restart: unless-stopped
+    networks:
+      - proxy_net
+    entrypoint:
+      - docker-entrypoint.sh
+      - solr-precreate
+      - mycore
+  
+  pywps:
+    container_name: metsis_pywps
+    image: epinux/metsis-pywps
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./volumes/pywps/processes:/pywps-flask/processes
+      - ./volumes/pywps/data:/pywps-flask/data
+      - ./volumes/pywps/outputs:/pywps-flask/outputs
+    restart: unless-stopped
+      
+
+  pydap:
+    container_name: metsis_pydap
+    image: epinux/metsis-pydap
+    ports:
+      - "80:80"
+    volumes:
+      - ./volumes/pydap/data:/var/www/sites/pydap/server/data
+    restart: unless-stopped
+    
+
+  drupal:
+    container_name: metsis_drupal
+    image: epinux/metsis-drupal
+    ports:
+      - "8080:80"
+    volumes:
+      - ./volumes/drupal/modules:/var/www/html/modules
+      - ./volumes/drupal/profiles:/var/www/html/profiles
+      - ./volumes/drupal/sites:/var/www/html/sites
+      - ./volumes/drupal/themes:/var/www/html/themes 
+    restart: unless-stopped
+    
+  postgres:
+    container_name: metsis_postgres
+    image: epinux/metsis-postgres
+    restart: always
+    environment:
+      POSTGRES_INITDB_ARGS: "-E UTF8"
+      POSTGRES_DB: nbs_db
+      POSTGRES_USER: nbs_user
+      POSTGRES_PASSWORD: nbs_password
+      LANGUAGE: "en_US.UTF-8"
+      LANG: "en_US.UTF-8"
+      LC_ALL: "en_US.UTF-8"
+    volumes:
+      - ./volumes/postgres/data:/var/lib/postgresql/11
+    ports:
+      - "5432:5432"
+      
+  pybasket:
+    container_name: metsis_pybasket
+    image: epinux/metsis-pybasket
+    ports:
+      - "7000:80"
+    restart: unless-stopped
+                   
+volumes:
+  solr_data:
+    name: solr_data
+  pywps_data:
+    name: pywps_data
+  pydap_data:
+    name: pydap_data
+  postgres_data:
+    name: postgres_data
+  drupal_data:
+    name: drupal_data
+  pybasket_data:
+    name: pybasket_data
+    
+networks:
+  # This is a network we share with our reverse proxy
+  proxy_net:
+    name: proxy_net
+    # Won't be created or destroyed with docker-compose up|down
+    external: true
+
