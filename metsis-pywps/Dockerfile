@@ -2,7 +2,7 @@
 #Using a fat docker since other images like nginx-gunicorn will just incorporate extra services
 FROM phusion/baseimage
 MAINTAINER Jorge S. Mendes de Jesus <jorge.dejesus@protomail.com>
-
+ENV DEBIAN_FRONTEND=noninteractive
 ARG ROOTDIR=/usr/local/ 
 
 
