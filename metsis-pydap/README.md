@@ -19,6 +19,9 @@ once the image is built, assuming the data to serve via `pydap` aere in the dire
 The `pydap` service can be made available on the `localhost` on port `8080` by running:
 
 ```
-docker run -p 8080:80 -v /media/volumes/pydap/data:/var/www/sites/pydap/server/data -t my_pydap_docker_image_name
+docker run \
+       -p 8080:80 \ 
+       -v /media/volumes/pydap/data:/var/www/sites/pydap/server/data \ 
+       -t my_pydap_docker_image_name
 ```
 
