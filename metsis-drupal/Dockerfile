@@ -3,7 +3,7 @@
 #from drupal:7.67-apache
 
 from drupal:8.7.6-apache
-
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get -y upgrade && apt-get install -y build-essential \
                                          checkinstall \
                                          ruby-dev \

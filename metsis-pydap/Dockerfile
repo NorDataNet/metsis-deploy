@@ -1,6 +1,6 @@
 # Use latest debian unstable
 FROM debian:sid-slim
-
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get -y dist-upgrade
 
 # Install few extra packages needed to clone repository and run web HTTP services

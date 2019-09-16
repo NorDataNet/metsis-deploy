@@ -1,5 +1,5 @@
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.7
-
+ENV DEBIAN_FRONTEND=noninteractive
 ENV BASKETDIR /opt/basket/
 
 WORKDIR /
