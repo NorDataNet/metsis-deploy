@@ -1,8 +1,12 @@
-#based on https://hub.docker.com/r/geographica/gdal2/~/dockerfile/
-#Using a fat docker since other images like nginx-gunicorn will just incorporate extra services
+# based on https://hub.docker.com/r/geographica/gdal2/~/dockerfile/
+# Using a fat docker since other images like nginx-gunicorn will just incorporate extra services
+
 FROM phusion/baseimage
+
 MAINTAINER Jorge S. Mendes de Jesus <jorge.dejesus@protomail.com>
+
 ENV DEBIAN_FRONTEND=noninteractive
+
 ARG ROOTDIR=/usr/local/ 
 
 
@@ -26,16 +30,28 @@ RUN apt-get update -y && install_clean \
 	python3-gdal \
 	grass-core \
 	git \
-	cmake
+	cmake \
+        wget \
+        libudunits2-dev \
+        libxml2-dev \
+        libproj-dev \
+        libnetcdf-dev \
+        libcurl4-gnutls-dev \
+        pkg-config
 
-RUN apt-get update && \
-    apt-get upgrade -y && \ 
-    apt-get install -y libudunits2-dev \
-                       wget \
-                       libxml2-dev \ 
-                       libproj-dev \
-                       libnetcdf-dev
-                       
+#RUN apt-get --purge remove -y --allow-remove-essential util-linux
+#RUN apt-get install -y util-linux
+
+# RUN apt-get update # && \
+#     apt-get upgrade -y && \ 
+# RUN apt-get install -y libudunits2-dev \
+#                      wget \
+#                       libxml2-dev \ 
+#                       libproj-dev \
+#                       libnetcdf-dev \
+#                       libcurl4-gnutls-dev \
+#                       pkg-config libudunits2-dev
+
 ADD install_fimex.sh /tmp/install_fimex.sh
 RUN /bin/bash /tmp/install_fimex.sh
 
