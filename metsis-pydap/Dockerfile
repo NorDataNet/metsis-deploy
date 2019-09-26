@@ -68,6 +68,7 @@ RUN apt-get install -y python3-chardet \
                        -o APT::Install-Suggests=0 -o APT::Install-Recommends=0
 RUN echo "####    ####    ####    ####    ####    ####    ####"
 # Build a debian package for pydap from git:master
+RUN echo "this is re-cloning pydap"
 RUN git clone https://github.com/epifanio/pydap
 RUN cd pydap && py2deb \
     --use-system-package=numpy,python3-numpy \
@@ -92,6 +93,16 @@ RUN cd pydap && py2deb \
 # Quick check if the package has been built,
 # and copy the contents in the default apache web root directory
 # so they can be downloaded
+
+
+RUN apt-get update && apt-get install -y libproj-dev apt-utils python3-scipy pkg-config python3-dev libpython3-dev libzip-dev libjpeg-dev libfreetype6-dev
+RUN pip3 install --upgrade pip
+RUN pip3 install --upgrade pyproj
+RUN pip3 install --upgrade dogpile.cache
+
+# RUN pip3 install git+https://github.com/jblarsen/pydap.responses.wms
+
+
 RUN ls /pkg
 RUN cp -r /pkg/* /var/www/html/
 
