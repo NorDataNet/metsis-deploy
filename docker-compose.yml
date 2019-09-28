@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.5'
 services:
   solr:
     container_name: metsis_solr
@@ -30,6 +30,7 @@ services:
       - ./volumes/pywps/processes:/pywps-flask/processes
       - ./volumes/pywps/data:/pywps-flask/data
       - ./volumes/pywps/outputs:/pywps-flask/outputs
+      - ./volumes/pywps/pywps-flask/demo.py:/pywps-flask/demo.py
     restart: unless-stopped
       
 
