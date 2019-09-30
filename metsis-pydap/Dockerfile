@@ -17,14 +17,16 @@ RUN apt-get install -y git \
 # and debug packages that requires to be built from src
  
 # Install minimal debian python build environment
+# lintian  \
 RUN apt-get install -y dpkg-dev  \
                        fakeroot  \
-                       lintian  \
                        python3-setuptools  \
                        python3-wheel  \
                        python3-pip  \
                        -o APT::Install-Suggests=0 \
                        -o APT::Install-Recommends=0
+
+RUN pip3 install --upgrade pip
 
 # Install py2deb
 
@@ -35,7 +37,6 @@ RUN mkdir /pkg
 ADD docker_test/debcontrol.sh /pkg/debcontrol.sh
 
 # Install Pydap dependencies
-
 
 # Use a webob fork, as the actual version is buggy
 # it fails in serving netcdf files via pydap
@@ -95,13 +96,22 @@ RUN cd pydap && py2deb \
 # so they can be downloaded
 
 
-RUN apt-get update && apt-get install -y libproj-dev apt-utils python3-scipy pkg-config python3-dev libpython3-dev libzip-dev libjpeg-dev libfreetype6-dev
-RUN pip3 install --upgrade pip
-RUN pip3 install --upgrade pyproj
-RUN pip3 install --upgrade dogpile.cache
+# this is used to test the wms handler, it is actually not really needed here, commenting for now
+# RUN apt-get update && apt-get install -y libproj-dev apt-utils \
+#                                         python3-scipy \
+#                                         pkg-config \
+#                                         python3-dev \
+#                                         libpython3-dev \
+#                                         libzip-dev \
+#                                         libjpeg-dev \
+#                                         libfreetype6-dev \
+#                                         -o APT::Install-Suggests=0 \
+#                                         -o APT::Install-Recommends=0
+
+# RUN pip3 install --upgrade pyproj
+# RUN pip3 install --upgrade dogpile.cache
 
 # RUN pip3 install git+https://github.com/jblarsen/pydap.responses.wms
-
 
 RUN ls /pkg
 RUN cp -r /pkg/* /var/www/html/
