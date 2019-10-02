@@ -14,8 +14,6 @@ services:
     volumes:
       - solr_data:/var/solr/data
     restart: unless-stopped
-    networks:
-      - proxy_net
     entrypoint:
       - docker-entrypoint.sh
       - solr-precreate
@@ -25,12 +23,14 @@ services:
     container_name: metsis_pywps
     image: epinux/metsis-pywps
     ports:
-      - "5000:5000"
+      - "5000:80"
     volumes:
       - ./volumes/pywps/processes:/pywps-flask/processes
       - ./volumes/pywps/data:/pywps-flask/data
       - ./volumes/pywps/outputs:/pywps-flask/outputs
       - ./volumes/pywps/pywps-flask/demo.py:/pywps-flask/demo.py
+      - ./volumes/pywps/pywps-flask/wsgi/pywps.wsgi:/pywps-flask/wsgi/pywps.wsgi
+      - ./volumes/pywps/pywps-flask/pywps.cfg:/pywps-flask/pywps.cfg
     restart: unless-stopped
       
 
@@ -93,11 +93,5 @@ volumes:
     name: drupal_data
   pybasket_data:
     name: pybasket_data
-    
-networks:
-  # This is a network we share with our reverse proxy
-  proxy_net:
-    name: proxy_net
-    # Won't be created or destroyed with docker-compose up|down
-    external: true
+
 
