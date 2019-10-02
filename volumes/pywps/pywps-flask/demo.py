@@ -50,7 +50,7 @@ processes = [
     Area(),
     Box(),
     TestJson(),
-    Transformations()
+    Transformation()
 ]
 
 # For the process list on the home page
@@ -69,12 +69,11 @@ service = Service(processes, ['pywps.cfg'])
 def hello():
     server_url = pywps.configuration.get_config_value("server", "url")
     request_url = flask.request.url
-    # print(app.config.keys())
+    if 'docker_port' not in list(app.config.keys()):
+        app.config['docker_port'] = None
     # print(app.config['docker_port'])
-    if app.config['docker_port'] != 0:
-        print("here some actions")
-    print(server_url)
-    server_url = server_url.replace('localhost', 'localhost:' + str(app.config['docker_port']))
+    if app.config['docker_port']:
+        server_url = server_url.replace('localhost', 'localhost:' + str(app.config['docker_port']))
     return flask.render_template('home.html', request_url=request_url,
                                  server_url=server_url,
                                  process_descriptor=process_descriptor)
