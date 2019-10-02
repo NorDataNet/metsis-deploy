@@ -1,11 +1,13 @@
 # based on https://hub.docker.com/r/geographica/gdal2/~/dockerfile/
 # Using a fat docker since other images like nginx-gunicorn will just incorporate extra services
 
-FROM phusion/baseimage
+# FROM phusion/baseimage
+
+FROM debian:sid-slim
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get -y dist-upgrade
 
 MAINTAINER Jorge S. Mendes de Jesus <jorge.dejesus@protomail.com>
-
-ENV DEBIAN_FRONTEND=noninteractive
 
 ARG ROOTDIR=/usr/local/ 
 
@@ -14,8 +16,9 @@ ARG PROCESSOR_N=8
 ARG FLASK_GIT=https://github.com/epifanio/pywps-flask.git
 
 WORKDIR $ROOTDIR/
+# install_clean # apt-get install -y
 
-RUN apt-get update -y && install_clean \
+RUN apt-get update -y && apt-get install -y  \
 	software-properties-common \
 	build-essential \
 	python3-dev \
@@ -31,13 +34,18 @@ RUN apt-get update -y && install_clean \
 	grass-core \
 	git \
 	cmake \
-        wget \
-        libudunits2-dev \
-        libxml2-dev \
-        libproj-dev \
-        libnetcdf-dev \
-        libcurl4-gnutls-dev \
-        pkg-config
+    wget \
+    libudunits2-dev \
+    libxml2-dev \
+    libproj-dev \
+    libnetcdf-dev \
+    libcurl4-gnutls-dev \
+    pkg-config \
+    runit \
+    netcdf-bin \
+    -o APT::Install-Suggests=0 \
+    -o APT::Install-Recommends=0
+
 
 #RUN apt-get --purge remove -y --allow-remove-essential util-linux
 #RUN apt-get install -y util-linux
@@ -52,6 +60,10 @@ RUN apt-get update -y && install_clean \
 #                       libcurl4-gnutls-dev \
 #                       pkg-config libudunits2-dev
 
+ADD install_fimex_dependencies.sh /tmp/install_fimex_dependencies.sh
+RUN /bin/bash /tmp/install_fimex_dependencies.sh
+
+RUN pwd
 ADD install_fimex.sh /tmp/install_fimex.sh
 RUN /bin/bash /tmp/install_fimex.sh
 
@@ -63,20 +75,20 @@ WORKDIR /pywps-flask
 
 RUN pip3 install git+https://github.com/geopython/pywps
 RUN pip3 install -r requirements.txt
+RUN pip3 install grass-session
 
 # RUN python3 setup.py build
 RUN python3 setup.py install
 
-RUN mkdir /etc/service/pywps4
-COPY pywps4_service.sh /etc/service/pywps4/run
-RUN chmod +x /etc/service/pywps4/run
 
-EXPOSE 5000
+RUN apt-get install -y apache2 libapache2-mod-wsgi-py3 && a2enmod wsgi
+ADD pywps.conf /etc/apache2/sites-enabled/pywps.conf
+ADD pywps.wsgi /pywps-flask/wsgi/pywps.wsgi
+RUN chmod -R 777 /pywps-flask/logs
 
-#docker build -t pywps/flask-ubuntu:latest . 
-#docker run -p 5000:5000 pywps/flask-ubuntu
-#http://localhost:5000/wps?request=GetCapabilities&service=WPS
-#http://localhost:5000/wps?request=DescribeProcess&service=WPS&identifier=all&version=1.0.0    
+EXPOSE 80
+CMD ["apachectl", "-D", "FOREGROUND", "-e", "info"]
+#CMD ["python3", "/pywps-flask/demo.py", "-a"]
 
 
 
