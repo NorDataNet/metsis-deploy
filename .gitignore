@@ -21,3 +21,9 @@ pywps_flask.egg-info/
 _build/
 .idea/
 .ipynb_checkpoints/
+
+# binary data files
+*.nc4
+*.bz2
+*.pdf
+*.nc
