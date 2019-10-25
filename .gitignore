@@ -20,3 +20,4 @@ pywps_flask.egg-info/
 # docs build artifacts
 _build/
 .idea/
+.ipynb_checkpoints/
