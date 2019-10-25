@@ -46,6 +46,14 @@ services:
       - ./volumes/pydap/data:/var/www/sites/pydap/server/data
     restart: unless-stopped
     
+  jupyter:
+    container_name: metsis_jupyter
+    image: epinux/metsis-jupyter
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./volumes/jupyter/notebooks:/home/metsis/work
+    restart: unless-stopped
 
   drupal:
     container_name: metsis_drupal
