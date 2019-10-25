@@ -3,6 +3,8 @@ workdir/*
 outputs/*
 logs/*
 .*.py~
+.*.yml~
+.*.sh~
 # vim, mac os
 *.sw*
 .DS_Store
