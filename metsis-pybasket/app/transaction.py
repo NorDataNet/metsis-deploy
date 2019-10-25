@@ -30,7 +30,17 @@ class Transaction:
         uris = ','.join(uri_list)
 
         doc = '''       
-        {"add": {"doc": {"id": "{{transcation.id}}", "username": "{{transcation.user_id}}", "email": "{{transcation.email}}", "status": "{{transcation.status.value}}", "uris": "{{ uris}}", "site": "{{transcation.site}}", "request_time": "2019-01-28T09:18:41.611Z"}, "overwrite": true, "commitWithin": 1000}}
+        {"add": 
+            {"doc": 
+                {"id": "{{transcation.id}}", 
+                "username": "{{transcation.user_id}}", 
+                "email": "{{transcation.email}}", 
+                "status": "{{transcation.status.value}}", 
+                "uris": "{{ uris}}", 
+                "site": "{{transcation.site}}", 
+                "request_time": "2019-01-28T09:18:41.611Z"}, 
+            "overwrite": true, 
+            "commitWithin": 1000}}
         '''
         tm = Template(doc)
         return tm.render(transcation=self, uris=uris)
