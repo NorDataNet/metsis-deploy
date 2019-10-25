@@ -17,7 +17,7 @@ docker build -t epinux/metsis-pybasket metsis-pybasket/ ${1}
 echo "####################################"
 echo "Building image pycsw"
 echo "####################################"
-docker build -t epinux/metsis-pycsw metsis-pycsw/ ${1}
+# docker build -t epinux/metsis-pycsw metsis-pycsw/ ${1}
 echo "####################################"
 echo "Building image pydap"
 echo "####################################"
@@ -26,9 +26,9 @@ echo "####################################"
 echo "Building image pywps"
 echo "####################################"
 docker build -t epinux/metsis-pywps metsis-pywps/ ${1}
+docker build -t epinux/metsis-pywps-xenial -f metsis-pywps/Dockerfile-xenial metsis-pywps/ ${1}
 echo "####################################"
 echo "Building image solr"
 echo "####################################"
 docker build -t epinux/metsis-solr metsis-solr/ ${1}
 echo "####################################"
-
