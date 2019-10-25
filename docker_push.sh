@@ -5,3 +5,5 @@ docker push epinux/metsis-pydap
 docker push epinux/metsis-pywps
 docker push epinux/metsis-solr
 docker push epinux/metsis-pybasket
+docker push epinux/metsis-jupyter
+docker push epinux/metsis-pycsw
