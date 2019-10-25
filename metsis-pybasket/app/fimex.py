@@ -1,5 +1,5 @@
 class Fimex:
-    '''
+    """
     wps_url: str
     reducetime_start: str
     reducetime_end: str
@@ -19,7 +19,7 @@ class Fimex:
     interpolate_hor_steps: str
     inputtype: str
     outputtype: str
-    '''
+    """
 
     def __init__(
             self,
