@@ -62,6 +62,7 @@ RUN chmod ugo+rx /tmp/set_passwd.sh; sync; /tmp/set_passwd.sh
 
 # start jupyter installing jupyter extension amd relative build tools
 
+#RUN ln -s /usr/bin/x86_64-linux-gnu-cpp /usr/bin/x86_64-linux-gnu-gcc
 RUN apt-get clean && apt-get update && \
     apt-get install -y --no-install-recommends \
     ruby-dev rubygems libmagickwand-dev git nodejs npm curl gnupg
@@ -102,8 +103,6 @@ RUN jupyter nbextension enable --py --sys-prefix ipympl
 
 RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager
 
-RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager
-
 # ADD scripts/install_lab_extensions.sh /tmp/install_lab_extensions.sh
 # RUN chmod ugo+rx /tmp/install_lab_extensions.sh; sync; /tmp/install_lab_extensions.sh
 
@@ -118,7 +117,7 @@ RUN pip3 install voila
 RUN jupyter labextension install @jupyter-voila/jupyterlab-preview
 RUN jupyter labextension install @krassowski/jupyterlab_go_to_definition
 
-RUN pip3 install black
+RUN pip3 install git+https://github.com/psf/black
 # RUN pip3 install rpy2 r-formatr
 RUN jupyter labextension install @ryantam626/jupyterlab_code_formatter
 RUN pip3 install jupyterlab_code_formatter
@@ -136,7 +135,7 @@ RUN jupyter labextension install @jupyterlab/geojson-extension
 # mathjax3-extension:
 RUN jupyter labextension install @jupyterlab/mathjax3-extension
 # vega2-extension:
-RUN jupyter labextension install @jupyterlab/vega2-extension
+# RUN jupyter labextension install @jupyterlab/vega2-extension
 # vega3-extension:
 RUN jupyter labextension install @jupyterlab/vega3-extension
 
@@ -193,8 +192,14 @@ RUN apt-get install -y python3-setuptools  \
 RUN pip3 install git+https://github.com/epifanio/webob
 # PyDAP
 RUN pip3 install git+https://github.com/epifanio/pydap
+# datashader
+RUN pip3 install fastparquet
+RUN pip3 install git+https://github.com/pyviz/datashader
+RUN jupyter labextension install @pyviz/jupyterlab_pyviz
+
 
 USER metsis
 
+# this directory is mounted as volume to serve static html using the apache server running on the pydap container
 
-# VOLUME /home/metsis/work/data
+RUN mkdir /home/metsis/work/html
