@@ -111,7 +111,7 @@ services:
     container_name: hyrax
     image: opendap/hyrax:latest
     ports:
-      - "8080:8080"
+      - "9090:8080"
     volumes:
       - ./volumes/pydap/data:/usr/share/hyrax
 
