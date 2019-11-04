@@ -106,7 +106,16 @@ services:
     ports:
       - "7000:80"
     restart: unless-stopped
-                   
+
+  hyrax:
+    container_name: hyrax
+    image: opendap/hyrax:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./volumes/pydap/data:/usr/share/hyrax
+
+
 volumes:
   solr_data:
     name: solr_data
