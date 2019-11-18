@@ -31,6 +31,8 @@ RUN apt-get install -y dpkg-dev  \
                        mlocate \
                        wget \
                        gunicorn \
+                       sqlite3 \
+                       mlocate \
                        -o APT::Install-Suggests=0 \
                        -o APT::Install-Recommends=0
 
@@ -49,6 +51,8 @@ RUN git clone https://github.com/geopython/pycsw.git \
 
 ENV PYCSW_CONFIG=/etc/pycsw/pycsw.cfg
 
+RUN pip3 install xmltodict
+
 RUN mkdir -p /etc/pycsw \
   && mkdir /var/lib/pycsw \
   && chown pycsw:pycsw /var/lib/pycsw
@@ -65,15 +69,16 @@ RUN ls /etc/apache2/sites-enabled/
 
 ADD docker_test/pycsw.conf /etc/apache2/sites-enabled/pycsw.conf
 
-#RUN update-rc.d apache2 defaults
-#EXPOSE 80
-RUN wget https://github.com/GeoNode/gisdata/archive/master.zip && unzip master.zip && ls -la
-RUN python3 pycsw/bin/pycsw-admin.py -c setup_db -f /etc/pycsw/pycsw.cfg
-RUN python3 pycsw/bin/pycsw-admin.py -c load_records -f /etc/pycsw/pycsw.cfg -p /gisdata-master/gisdata/metadata/good
+# RUN update-rc.d apache2 defaults
+# EXPOSE 80
+# RUN wget https://github.com/GeoNode/gisdata/archive/master.zip && unzip master.zip && ls -la
+# RUN python3 /usr/local/bin/pycsw-admin.py -c setup_db -f /etc/pycsw/pycsw.cfg
+# RUN python3 /usr/local/bin/pycsw-admin.py -c load_records -f /etc/pycsw/pycsw.cfg -p gisdata-master/gisdata/metadata/good -r
+
+RUN mkdir /home/pycsw/sample_data
 WORKDIR /home/pycsw
 
 #USER pycsw
-RUN apt-get update && apt-get -y install mlocate
 
 EXPOSE 8000
 
