@@ -45,6 +45,7 @@ services:
       - ./volumes/pydap/data:/var/www/sites/pydap/server/data
     restart: unless-stopped
     
+
   jupyter:
     container_name: metsis_jupyter
     image: epinux/metsis-jupyter
@@ -53,6 +54,7 @@ services:
     volumes:
       - ./volumes/jupyter/notebooks:/home/metsis/work
       - ./volumes/pydap/data/html:/home/metsis/work/html
+      - ./volumes/pycsw/sample_data:/home/metsis/work/sample_data
     restart: unless-stopped
 
   drupal:
@@ -66,7 +68,7 @@ services:
       - ./volumes/drupal/sites:/var/www/html/sites
       - ./volumes/drupal/themes:/var/www/html/themes 
     restart: unless-stopped
-    
+
   postgres:
     container_name: metsis_postgres
     image: epinux/metsis-postgres
@@ -84,21 +86,23 @@ services:
     ports:
       - "5432:5432"
 
-
   pycsw:
     container_name: metsis_pycsw
     image: epinux/metsis-pycsw
     ports:
       - "8000:8000"
     restart: unless-stopped
+    depends_on:
+      - "postgres"
     volumes:
-      - ./volumes/pycsw/conf/pycsw.cfg:/etc/pycsw/pycsw_pg.cfg
+      - ./volumes/pycsw/conf/pycsw.cfg:/etc/pycsw/pycsw.cfg
+      - ./volumes/pycsw/commands/pycsw_setup.sh:/usr/local/bin/pycsw_setup.sh
+      - ./volumes/pycsw/xml/test.xml:/home/pycsw/test.xml
+      - ./volumes/pycsw/xml/test_fix.xml:/home/pycsw/test_fix.xml
+      - ./volumes/pycsw/sample_data:/home/pycsw/sample_data
     entrypoint:
-      - python3
-      - /usr/local/bin/entrypoint.py
-    volumes:
-      - ./volumes/pybasket/config.yaml:/opt/basket/config.yaml
-
+      - /bin/sh
+      - /usr/local/bin/pycsw_setup.sh
 
   pybasket:
     container_name: metsis_pybasket
@@ -106,6 +110,8 @@ services:
     ports:
       - "7000:80"
     restart: unless-stopped
+    volumes:
+      - ./volumes/pybasket/config.yaml:/opt/basket/config.yaml
 
   hyrax:
     container_name: hyrax
