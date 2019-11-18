@@ -197,7 +197,9 @@ RUN pip3 install fastparquet
 RUN pip3 install git+https://github.com/pyviz/datashader
 RUN jupyter labextension install @pyviz/jupyterlab_pyviz
 
-
+# cool stuff!
+RUN pip3 install git+https://github.com/grantjenks/python-sortedcontainers
+RUN pip3 install xmltodict
 USER metsis
 
 # this directory is mounted as volume to serve static html using the apache server running on the pydap container
