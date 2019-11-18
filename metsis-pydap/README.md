@@ -11,7 +11,7 @@ cd metsis-deploy/metsis-pydap
 docker build -t my_pydap_docker_image_name .
 ```
 
-once the image is built, assuming the data to serve via `pydap` aere in the directory:
+once the image is built, assuming the data to serve via `pydap` are in the directory:
 
 
 `/media/volumes/pydap/data`
