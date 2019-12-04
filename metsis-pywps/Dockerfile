@@ -43,6 +43,7 @@ RUN apt-get update -y && apt-get install -y  \
     pkg-config \
     runit \
     netcdf-bin \
+    python3-netcdf4 \
     -o APT::Install-Suggests=0 \
     -o APT::Install-Recommends=0
 
@@ -76,7 +77,7 @@ WORKDIR /pywps-flask
 RUN pip3 install git+https://github.com/geopython/pywps
 RUN pip3 install -r requirements.txt
 RUN pip3 install grass-session
-
+RUN pip3 install bokeh
 # RUN python3 setup.py build
 RUN python3 setup.py install
 
