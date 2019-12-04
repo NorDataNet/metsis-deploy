@@ -200,6 +200,19 @@ RUN jupyter labextension install @pyviz/jupyterlab_pyviz
 # cool stuff!
 RUN pip3 install git+https://github.com/grantjenks/python-sortedcontainers
 RUN pip3 install xmltodict
+RUN pip3 install sickle
+RUN pip3 install tqdm
+RUN pip3 install parmap
+RUN pip3 install cython
+
+RUN apt-get install -y \
+                       python3-cartopy  \
+                       python3-netcdf4  \
+                       python3-owslib  \
+                       python3-pysolr  \
+                       -o APT::Install-Suggests=0 \
+                       -o APT::Install-Recommends=0
+
 USER metsis
 
 # this directory is mounted as volume to serve static html using the apache server running on the pydap container
