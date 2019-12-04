@@ -213,6 +213,7 @@ RUN apt-get install -y \
                        -o APT::Install-Suggests=0 \
                        -o APT::Install-Recommends=0
 
+RUN pip3 install xarray
 USER metsis
 
 # this directory is mounted as volume to serve static html using the apache server running on the pydap container
