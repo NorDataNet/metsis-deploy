@@ -1,6 +1,9 @@
 version: '3.5'
 services:
   solr:
+    build:
+      context: ./metsis-solr/
+      dockerfile: Dockerfile
     container_name: metsis_solr
     image: epinux/metsis-solr
     environment:
@@ -23,6 +26,9 @@ services:
 
 
   pywps:
+    build:
+      context: ./metsis-pywps/
+      dockerfile: Dockerfile
     container_name: metsis_pywps
     image: epinux/metsis-pywps
     ports:
@@ -37,6 +43,9 @@ services:
     restart: unless-stopped
 
   pydap:
+    build:
+      context: ./metsis-pydap/
+      dockerfile: Dockerfile
     container_name: metsis_pydap
     image: epinux/metsis-pydap
     ports:
@@ -47,6 +56,9 @@ services:
     
 
   jupyter:
+    build:
+      context: ./metsis-jupyter/
+      dockerfile: Dockerfile
     container_name: metsis_jupyter
     image: epinux/metsis-jupyter
     ports:
@@ -58,6 +70,9 @@ services:
     restart: unless-stopped
 
   drupal:
+    build:
+      context: ./metsis-drupal/
+      dockerfile: Dockerfile
     container_name: metsis_drupal
     image: epinux/metsis-drupal8
     ports:
@@ -76,6 +91,9 @@ services:
     restart: always
 
   postgres:
+    build:
+      context: ./metsis-postgres/
+      dockerfile: Dockerfile
     container_name: metsis_postgres
     image: epinux/metsis-postgres
     restart: always
@@ -93,6 +111,9 @@ services:
       - "5432:5432"
 
   pycsw:
+    build:
+      context: ./metsis-pycsw/
+      dockerfile: Dockerfile
     container_name: metsis_pycsw
     image: epinux/metsis-pycsw
     ports:
@@ -111,6 +132,9 @@ services:
       - /usr/local/bin/pycsw_setup.sh
 
   pybasket:
+    build:
+      context: ./metsis-pybasket/
+      dockerfile: Dockerfile
     container_name: metsis_pybasket
     image: epinux/metsis-pybasket
     ports:
