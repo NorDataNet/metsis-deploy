@@ -7,3 +7,5 @@ if [ ! -f master.zip ]; then
 fi
 
 python3 /usr/local/bin/entrypoint.py
+# with transaction == True, havesting of wms can be done with:
+# python3 /usr/local/bin/pycsw-admin.py -c post_xml -u http://pycsw:8000/pycsw/csw.py -x sample_data/xml/post.xml
