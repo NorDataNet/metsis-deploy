@@ -1,7 +1,7 @@
 echo "####################################"
 echo "Building image drupal"
 echo "####################################"
-docker build -t epinux/metsis-drupal metsis-drupal/ ${1}
+docker build -t epinux/metsis-drupal8 metsis-drupal/ ${1}
 echo "####################################"
 echo "Building image jupyter"
 echo "####################################"
@@ -17,7 +17,7 @@ docker build -t epinux/metsis-pybasket metsis-pybasket/ ${1}
 echo "####################################"
 echo "Building image pycsw"
 echo "####################################"
-# docker build -t epinux/metsis-pycsw metsis-pycsw/ ${1}
+docker build -t epinux/metsis-pycsw metsis-pycsw/ ${1}
 echo "####################################"
 echo "Building image pydap"
 echo "####################################"
