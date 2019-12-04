@@ -16,10 +16,10 @@ services:
       - ./volumes/solr/data:/tmp/data
     restart: unless-stopped
     entrypoint:
-      - docker-entrypoint.sh
-      - solr-precreate
-      - mmd
-      - /tmp/data/mmd/conf/
+      - bash
+      - "-c"
+      - "precreate-core nbs-l1 /opt/solr/server/solr/configsets/myconfig ; precreate-core nbs-l2 /opt/solr/server/solr/configsets/myconfig; precreate-core nbs-thumbnail /opt/solr/server/solr/configsets/myconfig; exec solr -f"
+
 
 
   pywps:
@@ -59,15 +59,21 @@ services:
 
   drupal:
     container_name: metsis_drupal
-    image: epinux/metsis-drupal
+    image: epinux/metsis-drupal8
     ports:
       - "8080:80"
     volumes:
-      - ./volumes/drupal/modules:/var/www/html/modules
-      - ./volumes/drupal/profiles:/var/www/html/profiles
-      - ./volumes/drupal/sites:/var/www/html/sites
-      - ./volumes/drupal/themes:/var/www/html/themes 
-    restart: unless-stopped
+      - ./volumes/drupal8/modules:/var/www/html/modules
+      - ./volumes/drupal8/profiles:/var/www/html/profiles
+      - ./volumes/drupal8/themes:/var/www/html/themes
+      - ./volumes/drupal8/sites:/var/www/html/sites
+    #volumes:
+    #  - ./volumes/drupal_dev:/var/www/html
+    #volumes:
+    #  - drupal8_data:/var/www/html
+    #volumes:
+    #  - drupal7_data:/var/www/html
+    restart: always
 
   postgres:
     container_name: metsis_postgres
@@ -131,8 +137,8 @@ volumes:
     name: pydap_data
   postgres_data:
     name: postgres_data
-  drupal_data:
-    name: drupal_data
+  drupal8_data:
+    name: drupal8_data
   pybasket_data:
     name: pybasket_data
 
