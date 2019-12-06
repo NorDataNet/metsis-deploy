@@ -11,9 +11,9 @@ echo "Building image postgres"
 echo "####################################"
 docker build -t epinux/metsis-postgres metsis-postgres/ ${1}
 echo "####################################"
-echo "Building image pybasket"
+echo "Building image fastapi"
 echo "####################################"
-docker build -t epinux/metsis-pybasket metsis-pybasket/ ${1}
+docker build -t epinux/metsis-fastapi metsis-fastapi/ ${1}
 echo "####################################"
 echo "Building image pycsw"
 echo "####################################"
