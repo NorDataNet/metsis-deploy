@@ -131,17 +131,19 @@ services:
       - /bin/sh
       - /usr/local/bin/pycsw_setup.sh
 
-  pybasket:
+  fastapi:
     build:
-      context: ./metsis-pybasket/
+      context: ./metsis-fastapi/
       dockerfile: Dockerfile
-    container_name: metsis_pybasket
-    image: epinux/metsis-pybasket
+    container_name: metsis_fastapi
+    image: epinux/metsis-fastapi
     ports:
       - "7000:80"
     restart: unless-stopped
     volumes:
-      - ./volumes/pybasket/config.yaml:/opt/basket/config.yaml
+      - ./volumes/fastapi/pybasket/config.yaml:/opt/basket/config.yaml
+      - ./volumes/fastapi/pybasket/app:/app
+
 
   hyrax:
     container_name: hyrax
