@@ -23,7 +23,7 @@ mail:
     charset: utf-8
   subject: Notification from data center
   body:
-    content: "You have ordered the following data from {0}:\r\n{1}\r\n"
-    uriFailed: \r\nWe are sorry that we were unable to fetch the following data:\r\n{0}\r\n
+    content: "You have ordered the following datasets from {0}:\r\n{1}\r\n"
+    uriFailed: \r\nWe are sorry that we were unable to fetch the following datasets:\r\n{0}\r\n
     error: \r\nWe were unable to process your order {0}. \r\nYour reference number is {1}. Please contact our administrator. \r\n
     archiveUrl: "\r\nYour valid data is ready to download at: {0}. This URL will be expire on {1,date,dd-MMM-yyyy}.\r\n"

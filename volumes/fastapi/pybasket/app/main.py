@@ -21,6 +21,14 @@ app = FastAPI()
 
 MAX_PROCESSING_SECOND = 600
 
+@app.get("/basket/conf")
+async def basket_conf():
+    config = confuse.Configuration('Basket', __name__)
+    test = str(config)
+    return test
+
+
+
 @app.get("/basket/transfer2")
 async def fimex_transfer2(*,
                           user_id: str,
