@@ -1,7 +1,7 @@
 FROM solr:8.2
 ENV DEBIAN_FRONTEND=noninteractive
-
 USER root
+RUN apt-get update && apt-get -y dist-upgrade
 RUN apt-get update && apt-get install -y mlocate sudo
 
 RUN echo "solr ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/solr && \
