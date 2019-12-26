@@ -16,6 +16,11 @@ from app.fimex import Fimex
 from app.solr_client import SolrClient
 from app.status import Status
 from app.transaction import Transaction
+from app.ts_plot import get_plottable_variables, create_figure
+
+import netCDF4
+from bokeh.embed import components
+import json
 
 app = FastAPI()
 
@@ -28,6 +33,24 @@ async def basket_conf():
     return test
 
 
+@app.get("/basket/tsplot")
+async def tsplot(*,
+                 resource_url: str = None,
+                 get: str = None,
+                 variable: str = None):
+    if get == 'param':
+        variables = get_plottable_variables(netCDF4.Dataset(str(resource_url), mode="r"))
+        # return json.dumps(variables)
+        return variables
+    if get == 'plot':
+        script, div = components(create_figure(netCDF4.Dataset(str(resource_url),
+                                                               mode="r"),
+                                               "",
+                                               'plot_title',
+                                               [variable],
+                                               [])
+                                 )
+        return json.dumps({script: script, div: div})
 
 @app.get("/basket/transfer2")
 async def fimex_transfer2(*,
