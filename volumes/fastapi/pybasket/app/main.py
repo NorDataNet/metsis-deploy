@@ -19,8 +19,9 @@ from app.transaction import Transaction
 from app.ts_plot import get_plottable_variables, create_figure
 
 import netCDF4
-from bokeh.embed import components
-import json
+from bokeh.embed import components, json_item
+# from bokeh.core import json_encoder as jse
+# import json
 
 app = FastAPI()
 
@@ -39,18 +40,21 @@ async def tsplot(*,
                  get: str = None,
                  variable: str = None):
     if get == 'param':
-        variables = get_plottable_variables(netCDF4.Dataset(str(resource_url), mode="r"))
-        # return json.dumps(variables)
-        return variables
+        variables, datetimeranges = get_plottable_variables(netCDF4.Dataset(str(resource_url), mode="r"))
+        return {"y_axis": [i[0] for i in variables]}
+
     if get == 'plot':
-        script, div = components(create_figure(netCDF4.Dataset(str(resource_url),
+        json_plot = create_figure(netCDF4.Dataset(str(resource_url),
                                                                mode="r"),
                                                "",
                                                'plot_title',
                                                [variable],
                                                [])
-                                 )
-        return json.dumps({script: script, div: div})
+
+
+        return json_item(json_plot, target='tsplot')
+
+
 
 @app.get("/basket/transfer2")
 async def fimex_transfer2(*,
