@@ -21,9 +21,23 @@ from app.ts_plot import get_plottable_variables, create_figure
 import netCDF4
 from bokeh.embed import components, json_item
 # from bokeh.core import json_encoder as jse
-# import json
+import json
+
+
+from fastapi import FastAPI
+from starlette.middleware.cors import CORSMiddleware
+
 
 app = FastAPI()
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 MAX_PROCESSING_SECOND = 600
 
