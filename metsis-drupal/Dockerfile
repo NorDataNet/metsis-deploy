@@ -23,7 +23,7 @@ RUN gem install compass \
                 breakpoint \
                 compass-validator \
                 singularitygs \
-                rdoc \
+                # rdoc \
                 guard \
                 guard-livereload \
                 zen-grids \
