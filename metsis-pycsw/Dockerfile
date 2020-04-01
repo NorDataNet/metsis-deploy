@@ -52,6 +52,7 @@ RUN git clone https://github.com/geopython/pycsw.git \
 ENV PYCSW_CONFIG=/etc/pycsw/pycsw.cfg
 
 RUN pip3 install xmltodict
+RUN pip3 install parmap
 
 RUN mkdir -p /etc/pycsw \
   && mkdir /var/lib/pycsw \
