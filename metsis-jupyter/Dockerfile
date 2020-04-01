@@ -110,37 +110,41 @@ RUN pip3 install ipyleaflet
 RUN jupyter nbextension enable --py --sys-prefix ipyleaflet
 RUN jupyter labextension install jupyter-leaflet
 
-RUN jupyter labextension install jupyterlab-drawio
-RUN jupyter labextension install jupyterlab_bokeh
+# RUN jupyter labextension install jupyterlab-drawio
+# RUN jupyter labextension install jupyterlab_bokeh
+
 RUN jupyter labextension install @jupyterlab/toc
 RUN pip3 install voila
-RUN jupyter labextension install @jupyter-voila/jupyterlab-preview
+# RUN jupyter labextension install @jupyter-voila/jupyterlab-preview
 RUN jupyter labextension install @krassowski/jupyterlab_go_to_definition
 
-RUN pip3 install git+https://github.com/psf/black
+# RUN pip3 install git+https://github.com/psf/black
+RUN pip3 install black
+
 # RUN pip3 install rpy2 r-formatr
+RUN pip3 install wheel
 RUN jupyter labextension install @ryantam626/jupyterlab_code_formatter
 RUN pip3 install jupyterlab_code_formatter
 RUN jupyter serverextension enable --py jupyterlab_code_formatter
 
-RUN pip3 install --upgrade jupyterlab-git
-RUN jupyter labextension install @jupyterlab/github
-RUN pip3 install jupyterlab_github
-RUN jupyter serverextension enable --sys-prefix jupyterlab_github
+# RUN pip3 install --upgrade jupyterlab-git
+# RUN jupyter labextension install @jupyterlab/github
+# RUN pip3 install jupyterlab_github
+# RUN jupyter serverextension enable --sys-prefix jupyterlab_github
 
 # fasta-extension:
-RUN jupyter labextension install @jupyterlab/fasta-extension
+# RUN jupyter labextension install @jupyterlab/fasta-extension
 # geojson-extension:
 RUN jupyter labextension install @jupyterlab/geojson-extension
 # mathjax3-extension:
-RUN jupyter labextension install @jupyterlab/mathjax3-extension
+# RUN jupyter labextension install @jupyterlab/mathjax3-extension
 # vega2-extension:
 # RUN jupyter labextension install @jupyterlab/vega2-extension
 # vega3-extension:
-RUN jupyter labextension install @jupyterlab/vega3-extension
+# RUN jupyter labextension install @jupyterlab/vega3-extension
 
-RUN pip3 install dash jupyterlab-dash
-RUN jupyter labextension install jupyterlab-dash
+# RUN pip3 install dash jupyterlab-dash
+# RUN jupyter labextension install jupyterlab-dash
 
 RUN pip3 install ipysheet
 RUN jupyter labextension install ipysheet
@@ -156,7 +160,7 @@ RUN apt install -y texlive node-katex
 RUN pip3 install jupyterlab_latex
 RUN jupyter labextension install @jupyterlab/latex
 # katex-extension:
-RUN jupyter labextension install @jupyterlab/katex-extension
+# RUN jupyter labextension install @jupyterlab/katex-extension
 
 RUN jupyter lab build
 
@@ -189,13 +193,15 @@ RUN apt-get install -y python3-setuptools  \
                        -o APT::Install-Recommends=0
 
 # Webob
-RUN pip3 install git+https://github.com/epifanio/webob
+RUN apt-get install python3-wheel
+RUN git clone https://github.com/epifanio/webob && cd webob && python3 setup.py install && cd .. && rm -rf webob
 # PyDAP
 RUN pip3 install git+https://github.com/epifanio/pydap
 # datashader
 RUN pip3 install fastparquet
-RUN pip3 install git+https://github.com/pyviz/datashader
-RUN jupyter labextension install @pyviz/jupyterlab_pyviz
+RUN pip3 install datashader
+# RUN git clone https://github.com/pyviz/datashader && cd datashader && pip3 install param  && python3 setup.py install && cd .. && rm -rf datashader
+# RUN jupyter labextension install @pyviz/jupyterlab_pyviz
 
 # cool stuff!
 RUN pip3 install git+https://github.com/grantjenks/python-sortedcontainers
@@ -214,6 +220,11 @@ RUN apt-get install -y \
                        -o APT::Install-Recommends=0
 
 RUN pip3 install xarray
+RUN pip3 install holoviews
+RUN pip3 install hvplot
+RUN pip3 install json2html
+
+
 USER metsis
 
 # this directory is mounted as volume to serve static html using the apache server running on the pydap container
