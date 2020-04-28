@@ -9,7 +9,7 @@ import requests
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from owslib.util import log
 from owslib.wps import WebProcessingService, WPSExecution
-from pydantic.types import EmailStr
+from pydantic.networks import EmailStr
 
 from app import status
 from app.fimex import Fimex
