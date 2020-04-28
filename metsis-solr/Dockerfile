@@ -1,4 +1,4 @@
-FROM solr:8.2
+FROM solr:8.5.0
 ENV DEBIAN_FRONTEND=noninteractive
 USER root
 RUN apt-get update && apt-get -y dist-upgrade
