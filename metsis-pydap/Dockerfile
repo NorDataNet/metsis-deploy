@@ -26,8 +26,9 @@ RUN apt-get install -y dpkg-dev  \
                        -o APT::Install-Suggests=0 \
                        -o APT::Install-Recommends=0
 
-RUN pip3 install --upgrade pip
+# RUN pip3 install --upgrade pip
 
+RUN apt-get remove -y python3-pip && python3.8 -m easy_install pip
 # Install py2deb
 
 RUN pip3 install git+https://github.com/paylogic/py2deb
@@ -43,12 +44,7 @@ ADD docker_test/debcontrol.sh /pkg/debcontrol.sh
 # when the description has unicode characters in it
 # see issue on github [https://github.com/pydap/pydap/issues/196]
 
-RUN git clone https://github.com/epifanio/webob
-RUN cd webob && py2deb \
-    --repository=/pkg --name-prefix=python3 .
-RUN dpkg -i /pkg/*.deb
 
-#                       python3-webob \
 
 RUN apt-get install -y python3-chardet \
                        python3-certifi \
@@ -67,57 +63,15 @@ RUN apt-get install -y python3-chardet \
                        python3-paste \
                        python3-pastedeploy \
                        -o APT::Install-Suggests=0 -o APT::Install-Recommends=0
-RUN echo "####    ####    ####    ####    ####    ####    ####"
-# Build a debian package for pydap from git:master
-RUN echo "this is re-cloning pydap"
-RUN git clone https://github.com/epifanio/pydap
-RUN cd pydap && py2deb \
-    --use-system-package=numpy,python3-numpy \
-    --use-system-package=Webob,python3-webob \
-    --use-system-package=Jinja2,python3-jinja2 \
-    --use-system-package=docopt,python3-docopt \
-    --use-system-package=six,python3-six \
-    --use-system-package=beautifulsoup4,python3-bs4 \
-    --use-system-package=requests,python3-requests \
-    --use-system-package=markupsafe,python3-markupsafe \
-    --use-system-package=certifi,python3-certifi \
-    --use-system-package=chardet,python3-chardet \
-    --use-system-package=idna,python3-idna \
-    --use-system-package=soupsieve,python3-soupsieve \
-    --use-system-package=urllib3,python3-urllib3 \
-    --use-system-package=gunicorn,python3-gunicorn \
-    --use-system-package=netcdf4,python3-netcdf4 \
-    --use-system-package=paste,python3-paste \
-    --use-system-package=pastedeploy,python3-pastedeploy \
-    --repository=/pkg --name-prefix=python3 .
 
-# Quick check if the package has been built,
-# and copy the contents in the default apache web root directory
-# so they can be downloaded
+RUN cd && git clone https://github.com/epifanio/webob && cd webob && python3 setup.py install
+
+RUN cd && git clone https://github.com/epifanio/pydap && cd pydap && python3 setup.py install
 
 
-# this is used to test the wms handler, it is actually not really needed here, commenting for now
-# RUN apt-get update && apt-get install -y libproj-dev apt-utils \
-#                                         python3-scipy \
-#                                         pkg-config \
-#                                         python3-dev \
-#                                         libpython3-dev \
-#                                         libzip-dev \
-#                                         libjpeg-dev \
-#                                         libfreetype6-dev \
-#                                         -o APT::Install-Suggests=0 \
-#                                         -o APT::Install-Recommends=0
-
-# RUN pip3 install --upgrade pyproj
-# RUN pip3 install --upgrade dogpile.cache
-
-# RUN pip3 install git+https://github.com/jblarsen/pydap.responses.wms
 
 RUN ls /pkg
 RUN cp -r /pkg/* /var/www/html/
-
-# installing built pydap package
-RUN dpkg -i /pkg/python3-pydap*
 
 # Add netcdf test data
 RUN mkdir -p /var/www/sites/pydap/server/data
