@@ -72,8 +72,8 @@ services:
     build:
       context: ./metsis-drupal/
       dockerfile: Dockerfile
-    container_name: metsis_drupal7
-    image: epinux/metsis-drupal7
+    container_name: metsis_drupal
+    image: epinux/metsis-drupal
     depends_on:
       - postgres
     ports:
@@ -93,7 +93,7 @@ services:
     #volumes:
     #  - drupal8_data:/var/www/html
     volumes:
-      - drupal7_data:/var/www/html
+      - drupal_data:/var/www/html
     restart: always
     links:
       - fastapi
@@ -183,7 +183,7 @@ volumes:
     name: postgres_data
   #drupal8_data:
   #  name: drupal8_data
-  drupal7_data:
-    name: drupal7_data
+  drupal_data:
+    name: drupal_data
   pybasket_data:
     name: pybasket_data
