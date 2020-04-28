@@ -16,7 +16,10 @@ from app.fimex import Fimex
 from app.solr_client import SolrClient
 from app.status import Status
 from app.transaction import Transaction
-from app.ts_plot import get_plottable_variables, create_figure
+#from app.ts_plot import get_plottable_variables, create_figure
+from app.nc_plot import get_plottable_variables, get_data, create_plot, create_page
+
+from fastapi.responses import JSONResponse, PlainTextResponse
 
 import netCDF4
 from bokeh.embed import components, json_item
@@ -54,20 +57,17 @@ async def tsplot(*,
                  get: str = None,
                  variable: str = None):
     if get == 'param':
-        variables, datetimeranges = get_plottable_variables(netCDF4.Dataset(str(resource_url), mode="r"))
-        return {"y_axis": [i[0] for i in variables]}
+        #variables, datetimeranges = get_plottable_variables(netCDF4.Dataset(str(resource_url), mode="r"))
+        #return {"y_axis": [i[0] for i in variables]}
+        return get_plottable_variables(resource_url)
 
     if get == 'plot':
-        json_plot = create_figure(netCDF4.Dataset(str(resource_url),
-                                                               mode="r"),
-                                               "",
-                                               'plot_title',
-                                               [variable],
-                                               [])
-
-
-        return json_item(json_plot, target='tsplot')
-
+        data = get_data(resource_url, variable, resample=None)
+        #json_plot = create_plot(data)
+        json_plot = create_page(data)
+        json_data = json_item(json_plot, target='tsplot')
+        #json_data['test'] = "<b>BOLD</b>"
+        return json_data
 
 
 @app.get("/basket/transfer2")
