@@ -67,7 +67,8 @@ RUN apt-get clean && apt-get update && \
     apt-get install -y --no-install-recommends \
     ruby-dev rubygems libmagickwand-dev git nodejs npm curl gnupg
 
-RUN npm install -g npm
+# RUN npm install npm@latest -g
+# RUN npm install -g npm
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 RUN apt-get update && apt-get install -y yarn
@@ -111,8 +112,12 @@ RUN jupyter nbextension enable --py --sys-prefix ipyleaflet
 RUN jupyter labextension install jupyter-leaflet
 
 # RUN jupyter labextension install jupyterlab-drawio
+<<<<<<< HEAD
 # RUN jupyter labextension install jupyterlab_bokeh
 
+=======
+RUN jupyter labextension install jupyterlab_bokeh
+>>>>>>> 72494b0b5feabaa5fe56bf1d87781302fe641011
 RUN jupyter labextension install @jupyterlab/toc
 RUN pip3 install voila
 # RUN jupyter labextension install @jupyter-voila/jupyterlab-preview
