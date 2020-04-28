@@ -1,6 +1,5 @@
 import lxml.etree as ET
 import xmltodict
-import pathlib
 import os
 import parmap
 import pathlib

@@ -8,9 +8,11 @@
 
 if [  "$INDEXDB" = true ]; then
   mkdir -p "$OUTPUT_ISO"
-  python3 /usr/local/bin/mmd2isofix.py -i "$METADATA" -o "$OUTPUT_ISO" -f "$FIX"
-  python3 /usr/local/bin/pycsw-admin.py -c setup_db -f /etc/pycsw/pycsw.cfg
-  python3 /usr/local/bin/pycsw-admin.py -c load_records -f /etc/pycsw/pycsw.cfg -p "$OUTPUT_ISO" -r -y
+  if [  "$FIX" = true ]; then
+      python3 /usr/local/bin/mmd2isofix.py -i "$METADATA" -o "$OUTPUT_ISO" -f "$FIX"
+  fi
+  python3 /usr/bin/pycsw-admin.py -c setup_db -f /etc/pycsw/pycsw.cfg
+  python3 /usr/bin/pycsw-admin.py -c load_records -f /etc/pycsw/pycsw.cfg -p "$OUTPUT_ISO" -r -y
 fi
 
 
