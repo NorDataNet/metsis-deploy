@@ -1,4 +1,4 @@
-from kartoza/postgis:11.0-2.5
+from kartoza/postgis:12.1
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get -y dist-upgrade
 
