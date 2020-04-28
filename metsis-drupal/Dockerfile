@@ -37,9 +37,6 @@ RUN gem install compass \
                 guard-livereload \
                 zen-grids \
                 gist
-<<<<<<< HEAD
 
 RUN drush dl ctools date entity views views_bulk_operations jquery_update
 # && drush en ctools
-=======
->>>>>>> 72494b0b5feabaa5fe56bf1d87781302fe641011
