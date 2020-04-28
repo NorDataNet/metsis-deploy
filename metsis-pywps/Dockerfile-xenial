@@ -15,6 +15,8 @@ ARG FLASK_GIT=https://github.com/epifanio/pywps-flask.git
 
 WORKDIR $ROOTDIR/
 
+# RUN apt-get update && apt-get -y dist-upgrade
+
 RUN apt-get update -y && install_clean \
 	software-properties-common \
 	build-essential \
@@ -55,6 +57,20 @@ RUN git clone $FLASK_GIT
 
 WORKDIR /pywps-flask
 
+RUN git clone https://github.com/geopython/pywps && cd pywps && pip3 install . && cd .. && rm -rf pywps
+# git+https://github.com/geopython/pywps
+RUN pip3 install -r requirements.txt
+RUN pip3 install grass-session
+# RUN pip3 install bokeh
+# RUN python3 setup.py build
+RUN python3 setup.py install
+
+
+RUN apt-get update && apt-get install -y apache2 libapache2-mod-wsgi-py3 && a2enmod wsgi
+ADD pywps.conf /etc/apache2/sites-enabled/pywps.conf
+ADD pywps.wsgi /pywps-flask/wsgi/pywps.wsgi
+RUN chmod -R 777 /pywps-flask/logs
+
 RUN pip3 install bokeh
 RUN pip3 install grass-session
 RUN pip3 install git+https://github.com/geopython/pywps
@@ -65,4 +81,31 @@ RUN mkdir /etc/service/pywps4
 COPY pywps4_service.sh /etc/service/pywps4/run
 RUN chmod +x /etc/service/pywps4/run
 
-EXPOSE 5000
+
+RUN apt-get install -y unzip
+ADD install_mdenoise.sh /tmp/install_mdenoise.sh
+RUN /bin/bash /tmp/install_mdenoise.sh
+
+# cool stuff!
+RUN pip3 install git+https://github.com/grantjenks/python-sortedcontainers
+RUN pip3 install xmltodict
+RUN pip3 install sickle
+RUN pip3 install tqdm
+RUN pip3 install parmap
+RUN pip3 install cython
+
+RUN apt-get install -y \
+                       python3-cartopy  \
+                       python3-owslib  \
+                       python3-pysolr  \
+                       -o APT::Install-Suggests=0 \
+                       -o APT::Install-Recommends=0
+
+RUN pip3 install xarray
+RUN pip3 install holoviews
+RUN pip3 install hvplot
+RUN pip3 install json2html
+
+EXPOSE 80
+CMD ["apachectl", "-D", "FOREGROUND", "-e", "info"]
+#CMD ["python3", "/pywps-flask/demo.py", "-a"]

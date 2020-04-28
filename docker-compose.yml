@@ -23,8 +23,6 @@ services:
       - "-c"
       - "precreate-core nbs-l1 /opt/solr/server/solr/configsets/myconfig ; precreate-core nbs-l2 /opt/solr/server/solr/configsets/myconfig; precreate-core nbs-thumbnail /opt/solr/server/solr/configsets/myconfig; exec solr -f"
 
-
-
   pywps:
     build:
       context: ./metsis-pywps/
@@ -49,11 +47,11 @@ services:
     container_name: metsis_pydap
     image: epinux/metsis-pydap
     ports:
-      - "80:80"
+      - "9999:80"
     volumes:
       - ./volumes/pydap/data:/var/www/sites/pydap/server/data
     restart: unless-stopped
-    
+
 
   jupyter:
     build:
@@ -69,26 +67,36 @@ services:
       - ./volumes/pycsw/sample_data:/home/metsis/work/sample_data
     restart: unless-stopped
 
+
   drupal:
     build:
       context: ./metsis-drupal/
       dockerfile: Dockerfile
-    container_name: metsis_drupal
-    image: epinux/metsis-drupal8
+    container_name: metsis_drupal7
+    image: epinux/metsis-drupal7
+    depends_on:
+      - postgres
     ports:
       - "8080:80"
-    volumes:
-      - ./volumes/drupal8/modules:/var/www/html/modules
-      - ./volumes/drupal8/profiles:/var/www/html/profiles
-      - ./volumes/drupal8/themes:/var/www/html/themes
-      - ./volumes/drupal8/sites:/var/www/html/sites
     #volumes:
-    #  - ./volumes/drupal_dev:/var/www/html
+    #  - ./volumes/drupal/modules:/var/www/html/modules
+    #  - ./volumes/drupal/profiles:/var/www/html/profiles
+    #  - ./volumes/drupal/themes:/var/www/html/themes
+    #  - ./volumes/drupal/sites:/var/www/html/sites
+    #volumes:
+    #  - ./volumes/drupal8/modules:/var/www/html/modules
+    #  - ./volumes/drupal8/profiles:/var/www/html/profiles
+    #  - ./volumes/drupal8/themes:/var/www/html/themes
+    #  - ./volumes/drupal8/sites:/var/www/html/sites
+    #volumes:
+    #  - ./volumes/drupal:/var/www/html
     #volumes:
     #  - drupal8_data:/var/www/html
-    #volumes:
-    #  - drupal7_data:/var/www/html
+    volumes:
+      - drupal7_data:/var/www/html
     restart: always
+    links:
+      - fastapi
 
   postgres:
     build:
@@ -97,9 +105,10 @@ services:
     container_name: metsis_postgres
     image: epinux/metsis-postgres
     restart: always
+    hostname: postgres
     environment:
       POSTGRES_INITDB_ARGS: "-E UTF8"
-      POSTGRES_DB: drupal_db,csw_db
+      POSTGRES_DB: drupal_db,csw_db,metsis_test
       POSTGRES_USER: metsis_user
       POSTGRES_PASSWORD: metsis_password
       LANGUAGE: "en_US.UTF-8"
@@ -118,18 +127,27 @@ services:
     image: epinux/metsis-pycsw
     ports:
       - "8000:8000"
+    environment:
+      INDEXDB: "false"
+      METADATA: "/home/pycsw/sample_data/xml/adc/XML"
+      OUTPUT_ISO: "/home/pycsw/sample_data/iso_xml/adc"
+      FIX: "false"
     restart: unless-stopped
     depends_on:
       - "postgres"
     volumes:
       - ./volumes/pycsw/conf/pycsw.cfg:/etc/pycsw/pycsw.cfg
       - ./volumes/pycsw/commands/pycsw_setup.sh:/usr/local/bin/pycsw_setup.sh
+      - ./volumes/pycsw/commands/mmd2isofix.py:/usr/local/bin/mmd2isofix.py
+      - ./volumes/pycsw/commands/mmd-to-iso.xsl:/usr/local/share/mmd-to-iso.xsl
       - ./volumes/pycsw/xml/test.xml:/home/pycsw/test.xml
       - ./volumes/pycsw/xml/test_fix.xml:/home/pycsw/test_fix.xml
       - ./volumes/pycsw/sample_data:/home/pycsw/sample_data
+      - ./volumes/pycsw/conf/.bash_history:/root/.bash_history
     entrypoint:
       - /bin/sh
       - /usr/local/bin/pycsw_setup.sh
+
 
   fastapi:
     build:
@@ -138,7 +156,7 @@ services:
     container_name: metsis_fastapi
     image: epinux/metsis-fastapi
     ports:
-      - "7000:80"
+      - "80:80"
     restart: unless-stopped
     volumes:
       - ./volumes/fastapi/pybasket/config.yaml:/opt/basket/config.yaml
@@ -163,9 +181,9 @@ volumes:
     name: pydap_data
   postgres_data:
     name: postgres_data
-  drupal8_data:
-    name: drupal8_data
+  #drupal8_data:
+  #  name: drupal8_data
+  drupal7_data:
+    name: drupal7_data
   pybasket_data:
     name: pybasket_data
-
-
