@@ -1,0 +1,22 @@
+
+/**
+ * for now we import the bokeh libraries from the CDN
+ * version should be made configurable and able to be set
+ * from the module admin page.
+ */
+
+
+/**
+ * The admin page for the module should remove the need for creating pages
+ * "manually". Should probably do something like:
+ *
+ * $node = new stdClass();
+ * $node->title = "My title";
+ * $node->type = "mycontent";
+ * node_object_prepare($node);
+ * $node->uid = $user->uid;
+ * $node->status = 1;
+ * $node = node_submit($node);
+ * node_save($node);
+ **/
+

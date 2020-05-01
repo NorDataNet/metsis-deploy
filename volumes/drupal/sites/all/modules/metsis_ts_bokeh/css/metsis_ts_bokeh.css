@@ -1,0 +1,15 @@
+.plot-container {
+}
+.vars-container {
+  font-family: Tahoma, Verdana, Segoe, sans-serif;
+  display: flex;
+}
+.fixed-width {
+  width: 80px;
+}
+.flex-width {
+  flex-grow: 1;
+}
+.plot-submit {
+  flex-grow: 1;
+}

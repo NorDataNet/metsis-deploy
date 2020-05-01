@@ -1,0 +1,10 @@
+name = METSIS time series Bokeh
+description = Drupal module to consume a Bokeh time series plot
+version = 7.x-1.14
+core = 7.x
+package = METSIS
+project = metsis
+
+
+
+

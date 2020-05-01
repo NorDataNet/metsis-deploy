@@ -1,0 +1,121 @@
+<?php
+
+
+/**
+ * This modules provides a blocks with forms for plotting time series using
+ * METSIS web services that offer JS Bokeh ploting.
+ */
+require_once drupal_get_path('module', 'metsis_ts_bokeh') . '/metsis_ts_bokeh.conf';
+require_once drupal_get_path('module', 'metsis_ts_bokeh') . '/includes/metsis_ts_bokeh.constants.inc';
+require_once drupal_get_path('module', 'metsis_ts_bokeh') . '/includes/metsis_ts_bokeh.utils.inc';
+require_once drupal_get_path('module', 'metsis_ts_bokeh') . '/includes/metsis_ts_bokeh_forms.inc';
+
+function metsis_ts_bokeh_init() {
+  drupal_add_css(drupal_get_path('module', 'metsis_ts_bokeh') . '/css/metsis_ts_bokeh.css');
+}
+
+/**
+ * move to libs{
+ */
+$bokeh_js_options = [
+  'type' => 'external',
+  'weight' => -100,
+  //  'browsers' => array(
+  //    array('IE' => 'lte IE 9'),
+  //  ),
+];
+drupal_add_js('https://cdn.bokeh.org/bokeh/release/bokeh-2.0.0.min.js', $bokeh_js_options);
+drupal_add_js('https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.0.0.min.js', $bokeh_js_options);
+drupal_add_js('https://cdn.bokeh.org/bokeh/release/bokeh-tables-2.0.0.min.js', $bokeh_js_options);
+drupal_add_js('https://cdn.bokeh.org/bokeh/release/bokeh-api-2.0.0.min.js', $bokeh_js_options);
+/**
+ * move to libs}
+ */
+/**
+ * Implements hook_help()
+ *
+ * @param $path
+ * @param $arg
+ *
+ * @return string
+ */
+function metsis_ts_bokeh_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#metsis_ts_bokeh':
+      $output = '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('This METSIS module provides blocks for configuring and displaying
+                            a time series plot using the METSIS web services offering JS Bokeh library.
+                            Configure the block from
+                <a href="@metsis_ts_bokeh">blocks admin page</a>', [
+          '@metsis_ts_bokeh' => '/metsis_ts_bokeh#overlay=admin/structure/block',
+        ]) . ' to activate and configure METSIS time series Bokeh.</p>';
+      return $output;
+    case 'admin/content/metsis_ts_bokeh':
+      return '<p>' . t('METSIS time series Bokeh.') . '</p>';
+  }
+}
+
+/**
+ * Implements hook_block_info().
+ *
+ * @return array
+ */
+function metsis_ts_bokeh_block_info() {
+  $blocks = [];
+  $blocks['metsis_ts_bokeh_init_form'] = [
+    'info' => t('METSIS time series Bokeh init form'),
+    'cache' => DRUPAL_NO_CACHE,
+  ];
+  $blocks['metsis_ts_bokeh_plot_form'] = [
+    'info' => t('METSIS time series Bokeh plot form'),
+    'cache' => DRUPAL_NO_CACHE,
+  ];
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ * @param string $delta
+ *
+ * @return array
+ */
+function metsis_ts_bokeh_block_view($delta = '') {
+  $block = [];
+  switch ($delta) {
+    case 'metsis_ts_bokeh_init_form':
+      if (user_access('access content')) {
+        $block['content'] = drupal_get_form('metsis_ts_bokeh_init_form');
+        return $block;
+      }
+      break;
+    case 'metsis_ts_bokeh_plot_form':
+      if (user_access('access content')) {
+        $block['content'] = drupal_get_form('metsis_ts_bokeh_plot_form');
+        return $block;
+      }
+      break;
+  }
+  return $block;
+}
+
+/**
+ * Implements hook_theme().
+ *
+ * @param type $existing
+ * @param type $type
+ * @param type $theme
+ * @param type $path
+ *
+ * @return string
+ *
+ */
+function metsis_ts_bokeh_theme($existing, $type, $theme, $path) {
+  $module_path = drupal_get_path('module', 'metsis_ts_bokeh');
+  $items['metsis_ts_bokeh_plot_form'] = [
+    'render element' => 'form',
+    'template' => 'metsis_ts_bokeh_plot_form',
+    'path' => $module_path . '/theme/template/form/',
+  ];
+  return $items;
+}
