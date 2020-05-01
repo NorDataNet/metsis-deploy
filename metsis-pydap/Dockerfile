@@ -1,92 +1,117 @@
-# Use latest debian unstable
-FROM debian:sid-slim
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get -y dist-upgrade
+# =================================================================
+#
+# Authors: Massimo Di Stefano <massimodsa@met.no>
+# Copyright (c) 2017 Ricardo Garcia Silva
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation
+# files (the "Software"), to deal in the Software without
+# restriction, including without limitation the rights to use,
+# copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following
+# conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
+# =================================================================
+#
+# Adapted from pycsw official Dockerfile
+#
+# Contributors:
+#   Massimo Di Stefano
+#   Arnulf Heimsbakk
+#
+# Note in the instruction above I added some extra packages:
+# git - to clone pydap repo or install with pip directly form github
+# bash - for interactive docker session
+# xmltodict - pythonic way to work on xml
 
-# Install few extra packages needed to clone repository and run web HTTP services
-RUN apt-get install -y git \
-                       apache2 \
-                       nano \
-                       libapache2-mod-wsgi-py3 \
-                       build-essential \
-                       -o APT::Install-Suggests=0 \
-                       -o APT::Install-Recommends=0
-# build-eesential is not needed,
-# but adding it anyway for many reason.
-# is is useful when playing with the image
-# and debug packages that requires to be built from src
- 
-# Install minimal debian python build environment
-# lintian  \
-RUN apt-get install -y dpkg-dev  \
-                       fakeroot  \
-                       python3-setuptools  \
-                       python3-wheel  \
-                       python3-pip  \
-                       -o APT::Install-Suggests=0 \
-                       -o APT::Install-Recommends=0
+FROM alpine:3.11
+LABEL maintainer="massimods@met.no,aheimsbakk@met.no"
 
-# RUN pip3 install --upgrade pip
+RUN apk add --no-cache \
+    bash nano wget sqlite openrc \
+    ca-certificates \
+    git \
+    libxml2 \
+    libxslt \
+    python3 \
+    apache2 \
+    apache2-ctl \
+    apache2-mod-wsgi \
+    && apk add --no-cache netcdf hdf5 --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
 
-RUN apt-get remove -y python3-pip && python3.8 -m easy_install pip
-# Install py2deb
+RUN apk add --no-cache --virtual .build-deps \
+    build-base \
+    libxml2-dev \
+    libxslt-dev \
+    python3-dev \
+    && apk add --no-cache --virtual .build-deps2 netcdf-dev hdf5-dev --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+  && pip3 install --upgrade pip setuptools \
+  && pip3 install wheel \
+  && pip3 install \
+    gunicorn \
+    lxml \
+    xmltodict \
+    chardet \
+    certifi \
+    bs4 \
+    docopt \
+    jinja2 \
+    markupsafe \
+    numpy \
+    six \
+    requests \
+    idna \
+    soupsieve \
+    urllib3 \
+    netcdf4 \
+    sqlalchemy \
+    gunicorn \
+    paste \
+    pastedeploy \
+    gsw \
+    coards \
+    ordereddict
 
-RUN pip3 install git+https://github.com/paylogic/py2deb
-
-# Add a Directory where to store packages
-RUN mkdir /pkg
-ADD docker_test/debcontrol.sh /pkg/debcontrol.sh
-
-# Install Pydap dependencies
-
-# Use a webob fork, as the actual version is buggy
-# it fails in serving netcdf files via pydap
-# when the description has unicode characters in it
-# see issue on github [https://github.com/pydap/pydap/issues/196]
-
-
-
-RUN apt-get install -y python3-chardet \
-                       python3-certifi \
-                       python3-bs4 \
-                       python3-docopt \
-                       python3-jinja2 \
-                       python3-markupsafe \
-                       python3-numpy \
-                       python3-six python3-requests \
-                       python3-idna \
-                       python3-soupsieve \
-                       python3-urllib3 \
-                       python3-netcdf4 \
-                       python3-sqlalchemy \
-                       python3-gunicorn \
-                       python3-paste \
-                       python3-pastedeploy \
-                       -o APT::Install-Suggests=0 -o APT::Install-Recommends=0
-
-RUN cd && git clone https://github.com/epifanio/webob && cd webob && python3 setup.py install
-
-RUN cd && git clone https://github.com/epifanio/pydap && cd pydap && python3 setup.py install
-
-
-
-RUN ls /pkg
-RUN cp -r /pkg/* /var/www/html/
+RUN cd \
+    && git clone https://github.com/epifanio/webob \
+    && cd webob \
+    && python3 setup.py install \
+    && cd \
+    && git clone https://github.com/epifanio/pydap \
+    && cd pydap \
+    && python3 setup.py install \
+    && cd \
+    && rm -rf webob pydap
 
 # Add netcdf test data
-RUN mkdir -p /var/www/sites/pydap/server/data
-#ADD docker_test/SN99938.nc /var/www/sites/pydap/server/data/SN99938.nc
+
+RUN mkdir -p /var/www/localhost/pydap/data
+RUN mkdir -p /var/www/localhost/wsgi-bin
+# RUN chmod -R 777 /var/www/localhost/wsgi-bin
+RUN chmod -R 777 /var/www/localhost/pydap/data
 
 # ADD sample configuration to run pydap as wsgi application under apache
-ADD docker_test/dap.conf /etc/apache2/sites-enabled/dap.conf
-ADD docker_test/dap.wsgi /var/www/pydap/server/apache/pydap.wsgi
+ADD conf/dap.conf /etc/apache2/conf.d/dap.conf
+ADD conf/dap.wsgi /var/www/localhost/wsgi-bin/pydap.wsgi
 
-RUN update-rc.d apache2 defaults
+RUN rc-update add apache2 default
+
 EXPOSE 80
 
-# Clean up APT
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
+RUN apk del .build-deps
+RUN apk del .build-deps2
 
 CMD ["apachectl", "-D", "FOREGROUND", "-e", "info"]
-# fpm -e --after-install ../DEBIAN/postinst.new -s deb -t deb ../old.deb
