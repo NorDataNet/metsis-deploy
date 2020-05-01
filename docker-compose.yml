@@ -49,9 +49,8 @@ services:
     ports:
       - "9999:80"
     volumes:
-      - ./volumes/pydap/data:/var/www/sites/pydap/server/data
+      - ./volumes/pydap/data:/var/www/localhost/pydap/data
     restart: unless-stopped
-
 
   jupyter:
     build:
@@ -67,7 +66,6 @@ services:
       - ./volumes/pycsw/sample_data:/home/metsis/work/sample_data
     restart: unless-stopped
 
-
   drupal:
     build:
       context: ./metsis-drupal/
@@ -78,22 +76,9 @@ services:
       - postgres
     ports:
       - "8080:80"
-    #volumes:
-    #  - ./volumes/drupal/modules:/var/www/html/modules
-    #  - ./volumes/drupal/profiles:/var/www/html/profiles
-    #  - ./volumes/drupal/themes:/var/www/html/themes
-    #  - ./volumes/drupal/sites:/var/www/html/sites
-    #volumes:
-    #  - ./volumes/drupal8/modules:/var/www/html/modules
-    #  - ./volumes/drupal8/profiles:/var/www/html/profiles
-    #  - ./volumes/drupal8/themes:/var/www/html/themes
-    #  - ./volumes/drupal8/sites:/var/www/html/sites
-    #volumes:
-    #  - ./volumes/drupal:/var/www/html
-    #volumes:
-    #  - drupal8_data:/var/www/html
     volumes:
       - drupal_data:/var/www/html
+      - ./volumes/drupal/sites/all/modules/metsis_ts_bokeh:/var/www/html/sites/all/modules/metsis_ts_bokeh
     restart: always
     links:
       - fastapi
@@ -129,9 +114,9 @@ services:
       - "8000:8000"
     environment:
       INDEXDB: "false"
+      FIX: "false"
       METADATA: "/home/pycsw/sample_data/xml/adc/XML"
       OUTPUT_ISO: "/home/pycsw/sample_data/iso_xml/adc"
-      FIX: "false"
     restart: unless-stopped
     depends_on:
       - "postgres"
@@ -148,7 +133,6 @@ services:
       - /bin/sh
       - /usr/local/bin/pycsw_setup.sh
 
-
   fastapi:
     build:
       context: ./metsis-fastapi/
@@ -161,7 +145,6 @@ services:
     volumes:
       - ./volumes/fastapi/pybasket/config.yaml:/opt/basket/config.yaml
       - ./volumes/fastapi/pybasket/app:/app
-
 
   hyrax:
     container_name: hyrax
@@ -181,8 +164,6 @@ volumes:
     name: pydap_data
   postgres_data:
     name: postgres_data
-  #drupal8_data:
-  #  name: drupal8_data
   drupal_data:
     name: drupal_data
   pybasket_data:
