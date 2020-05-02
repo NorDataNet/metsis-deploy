@@ -17,7 +17,7 @@ docker build -t epinux/metsis-fastapi metsis-fastapi/ ${1} --compress --squash
 echo "####################################"
 echo "Building image pycsw"
 echo "####################################"
-docker build -f Dockerfile -t epinux/metsis-pycsw metsis-pycsw/ ${1} --compress --squash
+docker build -t epinux/metsis-pycsw metsis-pycsw/ ${1} --compress --squash
 echo "####################################"
 echo "Building image pydap"
 echo "####################################"
