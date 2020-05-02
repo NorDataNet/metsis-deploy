@@ -1,0 +1,22 @@
+#!/bin/bash
+
+mkdir -p /etc/pki/tls/certs/
+
+if [ ! -f /etc/pki/tls/certs/server.pem ]; then
+	echo "Generating certificates ..."
+	openssl req \
+		-nodes \
+		-x509 \
+		-days 3650 \
+		-newkey rsa \
+		-keyout /etc/pki/tls/certs/server.key \
+		-out /etc/pki/tls/certs/server.pem \
+		-subj "/C=NO/ST=NO/L=Bergen/O=met/CN=met team/emailAddress=massimods@met.no"
+fi
+
+exec jupyter notebook \
+	--certfile=/etc/pki/tls/certs/server.pem \
+	--keyfile=/etc/pki/tls/certs/server.key \
+	--JupyterApp.port=443 \
+	--JupyterApp.ssl_options="{'ssl_version':5}" \
+	--allow-root

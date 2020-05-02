@@ -1,0 +1,13 @@
+{
+  "nbgallery": {
+    "url": "https://localhost:3000",
+    "client": {
+      "name": "notebook-client"
+    },
+    "extra_integration": {
+      "common": [],
+      "notebook": [],
+      "tree": []
+    }
+  }
+}
