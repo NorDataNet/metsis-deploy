@@ -40,32 +40,6 @@ services:
       - ./volumes/pywps/pywps-flask/pywps.cfg:/pywps-flask/pywps.cfg
     restart: unless-stopped
 
-  pydap:
-    build:
-      context: ./metsis-pydap/
-      dockerfile: Dockerfile
-    container_name: metsis_pydap
-    image: epinux/metsis-pydap
-    ports:
-      - "9999:80"
-    volumes:
-      - ./volumes/pydap/data:/var/www/localhost/pydap/data
-    restart: unless-stopped
-
-  jupyter:
-    build:
-      context: ./metsis-jupyter/
-      dockerfile: Dockerfile
-    container_name: metsis_jupyter
-    image: epinux/metsis-jupyter
-    ports:
-      - "8888:8888"
-    volumes:
-      - ./volumes/jupyter/notebooks:/home/metsis/work
-      - ./volumes/pydap/data/html:/home/metsis/work/html
-      - ./volumes/pycsw/sample_data:/home/metsis/work/sample_data
-    restart: unless-stopped
-
   drupal:
     build:
       context: ./metsis-drupal/
@@ -104,35 +78,6 @@ services:
     ports:
       - "5432:5432"
 
-  pycsw:
-    build:
-      context: ./metsis-pycsw/
-      dockerfile: Dockerfile
-    container_name: metsis_pycsw
-    image: epinux/metsis-pycsw
-    ports:
-      - "8000:8000"
-    environment:
-      INDEXDB: "false"
-      FIX: "false"
-      METADATA: "/home/pycsw/sample_data/xml/adc/XML"
-      OUTPUT_ISO: "/home/pycsw/sample_data/iso_xml/adc"
-    restart: unless-stopped
-    depends_on:
-      - "postgres"
-    volumes:
-      - ./volumes/pycsw/conf/pycsw.cfg:/etc/pycsw/pycsw.cfg
-      - ./volumes/pycsw/commands/pycsw_setup.sh:/usr/local/bin/pycsw_setup.sh
-      - ./volumes/pycsw/commands/mmd2isofix.py:/usr/local/bin/mmd2isofix.py
-      - ./volumes/pycsw/commands/mmd-to-iso.xsl:/usr/local/share/mmd-to-iso.xsl
-      - ./volumes/pycsw/xml/test.xml:/home/pycsw/test.xml
-      - ./volumes/pycsw/xml/test_fix.xml:/home/pycsw/test_fix.xml
-      - ./volumes/pycsw/sample_data:/home/pycsw/sample_data
-      - ./volumes/pycsw/conf/.bash_history:/root/.bash_history
-    entrypoint:
-      - /bin/sh
-      - /usr/local/bin/pycsw_setup.sh
-
   fastapi:
     build:
       context: ./metsis-fastapi/
@@ -154,14 +99,21 @@ services:
     volumes:
       - ./volumes/pydap/data:/usr/share/hyrax
 
+  jupyter:
+    build:
+      context: ./metsis-jupyter/
+      dockerfile: Dockerfile
+    container_name:  jupyter-alpine
+    image:  epinux/jupyter-alpine
+    ports:
+      - "443:443"
+    volumes:
+      - ./volumes/jupyter/notebooks:/root/notebooks/
+    restart: unless-stopped
 
 volumes:
   solr_data:
     name: solr_data
-  pywps_data:
-    name: pywps_data
-  pydap_data:
-    name: pydap_data
   postgres_data:
     name: postgres_data
   drupal_data:
