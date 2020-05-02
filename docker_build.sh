@@ -1,34 +1,33 @@
 echo "####################################"
 echo "Building image drupal"
 echo "####################################"
-docker build -t epinux/metsis-drupal metsis-drupal/ ${1}
+docker build -t epinux/metsis-drupal metsis-drupal/ ${1} --compress --squash
 echo "####################################"
 echo "Building image jupyter"
 echo "####################################"
-docker build -t epinux/metsis-jupyter metsis-jupyter/ ${1}
+docker build -t epinux/metsis-jupyter metsis-jupyter/ ${1} --compress --squash
 echo "####################################"
 echo "Building image postgres"
 echo "####################################"
-docker build -t epinux/metsis-postgres metsis-postgres/ ${1}
+docker build -t epinux/metsis-postgres metsis-postgres/ ${1} --compress --squash
 echo "####################################"
 echo "Building image fastapi"
 echo "####################################"
-docker build -t epinux/metsis-fastapi metsis-fastapi/ ${1}
+docker build -t epinux/metsis-fastapi metsis-fastapi/ ${1} --compress --squash
 echo "####################################"
 echo "Building image pycsw"
 echo "####################################"
-docker build -f Dockerfile-alpine -t epinux/metsis-pycsw metsis-pycsw/ ${1}
+docker build -f Dockerfile -t epinux/metsis-pycsw metsis-pycsw/ ${1} --compress --squash
 echo "####################################"
 echo "Building image pydap"
 echo "####################################"
-docker build -t epinux/metsis-pydap metsis-pydap/ ${1}
+docker build -t epinux/metsis-pydap metsis-pydap/ ${1} --compress --squash
 echo "####################################"
 echo "Building image pywps"
 echo "####################################"
-docker build -t epinux/metsis-pywps metsis-pywps/ ${1}
-#docker build -t epinux/metsis-pywps-xenial -f metsis-pywps/Dockerfile-xenial metsis-pywps/ ${1}
+docker build -t epinux/metsis-pywps metsis-pywps/ ${1} --compress --squash
 echo "####################################"
 echo "Building image solr"
 echo "####################################"
-docker build -t epinux/metsis-solr metsis-solr/ ${1}
+docker build -t epinux/metsis-solr metsis-solr/ ${1} --compress --squash
 echo "####################################"
