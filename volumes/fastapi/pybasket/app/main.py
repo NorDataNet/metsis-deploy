@@ -69,7 +69,7 @@ async def tsplot(*,
         #json_data['test'] = "<b>BOLD</b>"
         return json_data
 
-
+'''
 @app.get("/basket/transfer2")
 async def fimex_transfer2(*,
                           user_id: str,
@@ -146,7 +146,7 @@ async def fimex_transfer2(*,
         raise HTTPException(status_code=502, detail="Failed to establish a connection")
 
     return transaction.toJson()
-
+'''
 
 @app.get("/basket/transfer")
 async def fimex_transfer(*,
