@@ -86,7 +86,7 @@ services:
     image: epinux/metsis-fastapi
     ports:
       - "80:80"
-    restart: unless-stopped
+    restart: always
     volumes:
       - ./volumes/fastapi/pybasket/config.yaml:/opt/basket/config.yaml
       - ./volumes/fastapi/pybasket/app:/app
