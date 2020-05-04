@@ -53,6 +53,27 @@ services:
       - ./volumes/fastapi/pybasket/config.yaml:/opt/basket/config.yaml
       - ./volumes/fastapi/pybasket/app:/app
 
+  postgres:
+    build:
+      context: ./metsis-postgres/
+      dockerfile: Dockerfile
+    container_name: metsis_postgres
+    image: epinux/metsis-postgres
+    restart: always
+    hostname: postgres
+    environment:
+      POSTGRES_INITDB_ARGS: "-E UTF8"
+      POSTGRES_DB: drupal_db,csw_db,metsis_test
+      POSTGRES_USER: metsis_user
+      POSTGRES_PASSWORD: metsis_password
+      LANGUAGE: "en_US.UTF-8"
+      LANG: "en_US.UTF-8"
+      LC_ALL: "en_US.UTF-8"
+    volumes:
+      - ./volumes/postgres/data:/var/lib/postgresql/11
+    ports:
+      - "5432:5432"
+
 volumes:
   solr_data:
     name: solr_data
@@ -60,3 +81,5 @@ volumes:
     name: drupal_data
   pybasket_data:
     name: pybasket_data
+  postgres_data:
+    name: postgres_data
