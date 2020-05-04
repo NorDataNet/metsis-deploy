@@ -1,5 +1,4 @@
 # How to deploy:
-
 By cloning the [metsis-deploy](https://github.com/NorDataNet/metsis-deploy) repository
 
 `git clone https://github.com/NorDataNet/metsis-deploy`
@@ -21,7 +20,10 @@ The `pydap` service can be made available on the `localhost` on port `8080` by r
 ```
 docker run \
        -p 8080:80 \ 
-       -v /media/volumes/pydap/data:/var/www/sites/pydap/server/data \ 
+       -v /path/to/volumes/pydap/data:/var/www/localhost/pydap/data \ 
        -t my_pydap_docker_image_name
 ```
+
+Note:
+This repo will install a forked version of `pydap` and its dependency `webob` to address an unicode issue for certain metadata. 
 
