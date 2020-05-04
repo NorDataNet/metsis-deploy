@@ -22,3 +22,4 @@ cd metsis-deploy
 
 docker-compose up
 ```
+Note, the default docker-compose.yml will start only the `Drupal`, `SOLR` and `FastAPI` services.
