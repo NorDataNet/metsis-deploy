@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-2.0.0.min.js"></script>
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.0.0.min.js"></script>
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-tables-2.0.0.min.js"></script>
+<body>
+    <h2>Use JavaScript to Change Text</h2>
+    <p>This example writes "Hello JavaScript!" into an HTML element with id="demo":</p>
+    <p id="demo"></p>
+    <script>
+        fetch(
+                'http://localhost/basket/tsplot?get=param&resource_url=http://hyrax:8080/opendap/SN99938.nc&variable=relative_humidity')
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (item) {
+                Bokeh.embed.embed_item(item);
+            })
+    </script>
+    <div id="tsplot">
+    </div>
+</body>
+</html>
