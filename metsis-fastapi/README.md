@@ -2,7 +2,7 @@
 **Prototype API for time-series plot and METSIS basket functionality**
 
 Docker container serving a web application/API based on the <a href="https://fastapi.tiangolo.com/" target="_blank">fastapi</a> python software library. 
-The fastapi application and its configuration file are loaded at runtime from a mounted volume
+The fastapi application and its configuration file are loaded at runtime from a mounted volume.
 
 To start the service:
 
