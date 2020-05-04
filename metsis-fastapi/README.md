@@ -1,22 +1,23 @@
-A pre-built pybasket image is available on docker-hub
+This image provides a WEB API based on the [`fastapi`]() library. It mounts a volume to serve a fastapi-based application
 
-```
-docker pull epinux/metsis-pybasket 
-```
- 
 You can run this image as standalone service by running:
 
 ```
-docker run -p host_port:80 -t epinux/metsis-fastapi -v /absolute/path/to/metsis-deploy/volumes/fastapi/pybasket/config.yaml:/opt/basket/config.yaml 
-```
-Assuming the service is running on `localhost:5000` you can access api description at `http://localhost:5000/docs#/default`
-
-In case you want to build a new fastapi image simply run:
-
-```
-docker build -t 'new_image_name'
+sudo docker run -p 5000:80 -v 'absolute-path-to'/metsis-deploy/volumes/fastapi/pybasket/config.yaml:/opt/basket/config.yaml -v 'absolute-path-to'/metsis-deploy/volumes/fastapi/pybasket/app:/app epinux/metsis-fastapi
 ```
 
-and do not forget to replace `epinux/metsis-fastapi` with the `new_image_name`
+Assuming the service is running on `localhost:5000` you can access api API description at `http://localhost:5000/docs#/default`
+
+Assuming a netcdf resource is available at `resource_url` 
+
+Testing of the plotting API based on [`bokeh`]():
+
+* Get list of variables fronm a netcdf resource
+    http://localhost:5000/basket/tsplot?get=param&resource_url=resource_url
+* Get bokeh plot of a selected variable embedded in a html div `tsplot`
+    http://localhost:5000/basket/tsplot?get=plot&resource_url=resource_url&variable=variable_name
+
+
+
 
 
