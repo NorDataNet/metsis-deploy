@@ -27,11 +27,25 @@ from bokeh.embed import components, json_item
 import json
 
 
-from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from fastapi import FastAPI, Query, HTTPException
+
+# Adding import for file upload
+from typing import List
+from fastapi import File, UploadFile
+from fastapi.responses import HTMLResponse
 
 
-app = FastAPI()
+class Item(BaseModel):
+    url: str
+    get: str
+    variable: str = None
+
+app = FastAPI(title="PyBasket",
+              description="Prototype API for time-series plot and METSIS basket functionality",
+              version="0.0.1",
+              )
 
 
 app.add_middleware(
@@ -44,17 +58,94 @@ app.add_middleware(
 
 MAX_PROCESSING_SECOND = 600
 
+
+
+
+# files - this method will print the size of uploaded files
+@app.post("/files/")
+async def create_files(files: List[bytes] = File(...)):
+    return {"file_sizes": [len(file) for file in files]}
+
+# uploadfiles - this method will print the name of uploaded files
+@app.post("/uploadfiles/")
+async def create_upload_files(files: List[UploadFile] = File(...)):
+    return {"filenames": [file.filename for file in files]}
+
+# exe=ample form 'connected' to the files and 'uploadfiles' API
+@app.get("/")
+async def main():
+    content = """
+<body>
+<form action="/files/" enctype="multipart/form-data" method="post">
+<input name="files" type="file" multiple>
+<input type="submit">
+</form>
+<form action="/uploadfiles/" enctype="multipart/form-data" method="post">
+<input name="files" type="file" multiple>
+<input type="submit">
+</form>
+</body>
+    """
+    return HTMLResponse(content=content)
+
+
+
 @app.get("/basket/conf")
 async def basket_conf():
     config = confuse.Configuration('Basket', __name__)
     test = str(config)
     return test
 
+@app.get("/basket/plot")
+async def plot(*,
+                 resource_url: str = Query(...,title="Resource URL",
+                                  description="URL to a netcdf resource"),
+                 get: str = Query(...,title="Query string",
+                                  description="Receive list of parameters or get the plot, specifying the variable name",
+                                  regex='^(param|plot)$'),
+                 variable: str = Query(None,
+                                       title="Variable name",
+                                       description="String with the NetCDF Variable name")):
+    if get == 'param':
+        #variables, datetimeranges = get_plottable_variables(netCDF4.Dataset(str(resource_url), mode="r"))
+        #return {"y_axis": [i[0] for i in variables]}
+        return get_plottable_variables(resource_url)
+
+    if get == 'plot':
+        if not variable or variable not in get_plottable_variables(resource_url)["y_axis"]:
+            raise HTTPException(status_code=404, detail="Variable not found")
+        data = get_data(resource_url, variable, resample=None)
+        #json_plot = create_plot(data)
+        json_plot = create_page(data)
+        json_data = json_item(json_plot, target='tsplot')
+        #json_data['test'] = "<b>BOLD</b>"
+        return json_data
+    if get == 'data':
+        if not variable or variable not in get_plottable_variables(resource_url)["y_axis"]:
+            raise HTTPException(status_code=404, detail="Variable not found")
+        data = get_data(resource_url, variable, resample=None)
+        return data
+
+
+@app.get("/basket/ncplot")
+async def ncplot(item: Item):
+    if item.get == 'param':
+        #variables, datetimeranges = get_plottable_variables(netCDF4.Dataset(str(resource_url), mode="r"))
+        #return {"y_axis": [i[0] for i in variables]}
+        return get_plottable_variables(item.url)
+
+    if item.get == 'plot':
+        data = get_data(item.url, item.variable, resample=None)
+        #json_plot = create_plot(data)
+        json_plot = create_page(data)
+        json_data = json_item(json_plot, target='tsplot')
+        #json_data['test'] = "<b>BOLD</b>"
+        return json_data
 
 @app.get("/basket/tsplot")
 async def tsplot(*,
-                 resource_url: str = None,
-                 get: str = None,
+                 resource_url: str,
+                 get: str,
                  variable: str = None):
     if get == 'param':
         #variables, datetimeranges = get_plottable_variables(netCDF4.Dataset(str(resource_url), mode="r"))
