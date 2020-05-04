@@ -1,4 +1,4 @@
-#PyBasket
+# PyBasket
 **Prototype API for time-series plot and METSIS basket functionality**
 
 Docker container serving a web application/API based on the [`fastapi`](https://fastapi.tiangolo.com/) python software library. 
