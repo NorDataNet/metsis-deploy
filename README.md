@@ -21,12 +21,12 @@ If needed, to build a specific container simply run:
 List of *containers*:
 
 * [Drupal](metsis-drupal/README.md)
+* [PostgreSQL](metsis-postgres/README.md) 
+* [SOLR](metsis-solr/README.md) 
 * [FastAPI](metsis-fastapi/README.md) 
 * [Jupyter](metsis-jupyter/README.md) 
-* [PostgreSQL](metsis-postgres/README.md) (`:5432`)
-* [PyCSW](metsis-pycsw/README.md) (`:8000`)
-* [PyDAP](metsis-pydap/README.md) (`:5000`)
-* [PyWPS](metsis-pywps/README.md) (`:8983`)
-* [SOLR](metsis-solr/README.md) (`:8983`)
+* [PyCSW](metsis-pycsw/README.md) 
+* [PyDAP](metsis-pydap/README.md) 
+* [PyWPS](metsis-pywps/README.md) 
 
 Note, the default docker-compose.yml will start only the `Drupal`, `PostgreSQL`, `SOLR` and `FastAPI` services required to develop and test the FastAPI based application.
