@@ -1,0 +1,143 @@
+version: '3.5'
+services:
+  solr:
+    build:
+      context: ./metsis-solr/
+      dockerfile: Dockerfile
+    container_name: metsis_solr
+    image: epinux/metsis-solr
+    environment:
+      VIRTUAL_HOST: ${SOLR_VIRTUAL_HOST}
+      VIRTUAL_PORT: 8983
+      NETWORK_ACCESS: internal
+      LETSENCRYPT_HOST: ${SOLR_VIRTUAL_HOST}
+      LETSENCRYPT_MAIL: ${MY_EMAIL}
+    ports:
+      - "8983:8983"
+    volumes:
+      - solr_data:/var/solr/data
+      - ./volumes/solr/data:/tmp/data
+    restart: unless-stopped
+    entrypoint:
+      - bash
+      - "-c"
+      - "precreate-core nbs-l1 /opt/solr/server/solr/configsets/myconfig ; precreate-core nbs-l2 /opt/solr/server/solr/configsets/myconfig; precreate-core nbs-thumbnail /opt/solr/server/solr/configsets/myconfig; exec solr -f"
+
+  pywps:
+    build:
+      context: ./metsis-pywps/
+      dockerfile: Dockerfile
+    container_name: metsis_pywps
+    image: epinux/metsis-pywps
+    ports:
+      - "5000:80"
+    volumes:
+      - ./volumes/pywps/processes:/pywps-flask/processes
+      - ./volumes/pywps/data:/pywps-flask/data
+      - ./volumes/pywps/outputs:/pywps-flask/outputs
+      - ./volumes/pywps/pywps-flask/demo.py:/pywps-flask/demo.py
+      - ./volumes/pywps/pywps-flask/wsgi/pywps.wsgi:/pywps-flask/wsgi/pywps.wsgi
+      - ./volumes/pywps/pywps-flask/pywps.cfg:/pywps-flask/pywps.cfg
+    restart: unless-stopped
+
+  drupal:
+    build:
+      context: ./metsis-drupal/
+      dockerfile: Dockerfile
+    container_name: metsis_drupal
+    image: epinux/metsis-drupal
+    depends_on:
+      - postgres
+    ports:
+      - "8080:80"
+    volumes:
+      - drupal_data:/var/www/html
+      - ./volumes/drupal/sites/all/modules/metsis_ts_bokeh:/var/www/html/sites/all/modules/metsis_ts_bokeh
+    restart: always
+    links:
+      - fastapi
+
+  postgres:
+    build:
+      context: ./metsis-postgres/
+      dockerfile: Dockerfile
+    container_name: metsis_postgres
+    image: epinux/metsis-postgres
+    restart: always
+    hostname: postgres
+    environment:
+      POSTGRES_INITDB_ARGS: "-E UTF8"
+      POSTGRES_DB: drupal_db,csw_db,metsis_test
+      POSTGRES_USER: metsis_user
+      POSTGRES_PASSWORD: metsis_password
+      LANGUAGE: "en_US.UTF-8"
+      LANG: "en_US.UTF-8"
+      LC_ALL: "en_US.UTF-8"
+    volumes:
+      - ./volumes/postgres/data:/var/lib/postgresql/11
+    ports:
+      - "5432:5432"
+
+  fastapi:
+    build:
+      context: ./metsis-fastapi/
+      dockerfile: Dockerfile
+    container_name: metsis_fastapi
+    image: epinux/metsis-fastapi
+    ports:
+      - "7000:80"
+    restart: always
+    volumes:
+      - ./volumes/fastapi/pybasket/config.yaml:/opt/basket/config.yaml
+      - ./volumes/fastapi/pybasket/app:/app
+
+  hyrax:
+    container_name: hyrax
+    image: opendap/hyrax:latest
+    ports:
+      - "80:8080"
+    volumes:
+      - ./volumes/pydap/data:/usr/share/hyrax
+
+  jupyter:
+    build:
+      context: ./metsis-jupyter/
+      dockerfile: Dockerfile
+    container_name:  metsis_jupyter
+    image:  epinux/metsis-jupyter
+    ports:
+      - "444:443"
+    volumes:
+      - ./volumes/jupyter/notebooks:/root/notebooks/
+    restart: unless-stopped
+
+  pycsw:
+    build:
+      context: ./metsis-pycsw/
+      dockerfile: Dockerfile
+    container_name:  metsis_pycsw
+    image:  epinux/metsis-pycsw
+    ports:
+      - "8000:8000"
+    environment:
+      PYCSW_CONFIG: /etc/pycsw/pycsw.cfg
+    volumes:
+      - ./volumes/pycsw/conf/pycsw.cfg:/etc/pycsw/pycsw.cfg
+      - ./volumes/pycsw/commands/pycsw_setup.sh:/usr/local/bin/pycsw_setup.sh
+      - ./volumes/pycsw/commands/mmd2isofix.py:/usr/local/bin/mmd2isofix.py
+      - ./volumes/pycsw/commands/mmd-to-iso.xsl:/usr/local/share/mmd-to-iso.xsl
+    restart: unless-stopped
+
+volumes:
+  solr_data:
+    name: solr_data
+  postgres_data:
+    name: postgres_data
+  drupal_data:
+    name: drupal_data
+  pybasket_data:
+    name: pybasket_data
+  pywps_data:
+    name: pywps_data
+  pydap_data:
+    name: pydap_data
