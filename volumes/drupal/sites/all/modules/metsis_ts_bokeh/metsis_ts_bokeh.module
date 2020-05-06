@@ -24,10 +24,10 @@ $bokeh_js_options = [
   //    array('IE' => 'lte IE 9'),
   //  ),
 ];
-drupal_add_js('https://cdn.bokeh.org/bokeh/release/bokeh-2.0.0.min.js', $bokeh_js_options);
-drupal_add_js('https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.0.0.min.js', $bokeh_js_options);
-drupal_add_js('https://cdn.bokeh.org/bokeh/release/bokeh-tables-2.0.0.min.js', $bokeh_js_options);
-drupal_add_js('https://cdn.bokeh.org/bokeh/release/bokeh-api-2.0.0.min.js', $bokeh_js_options);
+drupal_add_js('https://cdn.bokeh.org/bokeh/release/bokeh-2.0.2.min.js', $bokeh_js_options);
+drupal_add_js('https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.0.2.min.js', $bokeh_js_options);
+drupal_add_js('https://cdn.bokeh.org/bokeh/release/bokeh-tables-2.0.2.min.js', $bokeh_js_options);
+drupal_add_js('https://cdn.bokeh.org/bokeh/release/bokeh-api-2.0.2.min.js', $bokeh_js_options);
 /**
  * move to libs}
  */
