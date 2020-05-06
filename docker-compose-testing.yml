@@ -88,8 +88,9 @@ services:
       - "7000:80"
     restart: always
     volumes:
-      - ./volumes/fastapi/pybasket/config.yaml:/opt/basket/config.yaml
-      - ./volumes/fastapi/pybasket/app:/app
+      # - ./volumes/fastapi/pybasket/config.yaml:/opt/basket/config.yaml
+      # - ./volumes/fastapi/pybasket/app:/app
+      - ./volumes/fastapi/ncplot/app:/app
 
   hyrax:
     container_name: hyrax
