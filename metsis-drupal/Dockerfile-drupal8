@@ -1,0 +1,4 @@
+from drupal:8.8.5-apache
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get -y dist-upgrade
