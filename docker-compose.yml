@@ -35,7 +35,7 @@ services:
       - "8080:80"
     volumes:
       - drupal_data:/var/www/html
-      - ./volumes/drupal/sites/all/modules/metsis_ts_bokeh:/var/www/html/sites/all/modules/metsis_ts_bokeh
+      - ./volumes/drupal7/sites/all/modules/metsis_ts_bokeh:/var/www/html/sites/all/modules/metsis_ts_bokeh
     restart: always
     links:
       - fastapi
