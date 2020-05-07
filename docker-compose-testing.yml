@@ -17,7 +17,7 @@ services:
     volumes:
       - solr_data:/var/solr/data
       - ./volumes/solr/data:/tmp/data
-    restart: unless-stopped
+    restart: always
     entrypoint:
       - bash
       - "-c"
@@ -40,16 +40,16 @@ services:
       - ./volumes/pywps/pywps-flask/pywps.cfg:/pywps-flask/pywps.cfg
     restart: unless-stopped
 
-  drupal:
+  drupal7:
     build:
       context: ./metsis-drupal/
       dockerfile: Dockerfile
-    container_name: metsis_drupal
-    image: epinux/metsis-drupal
+    container_name: metsis_drupal7
+    image: epinux/metsis-drupal7
     depends_on:
       - postgres
     ports:
-      - "8080:80"
+      - "7070:80"
     volumes:
       - drupal_data:/var/www/html
       - ./volumes/drupal/sites/all/modules/metsis_ts_bokeh:/var/www/html/sites/all/modules/metsis_ts_bokeh
@@ -66,7 +66,7 @@ services:
     depends_on:
       - postgres
     ports:
-      - "7070:80"
+      - "8080:80"
     volumes:
       - drupal8_data:/var/www/html
       - ./volumes/drupal8/metsis_ts_bokeh:/var/www/html/modules/metsis_ts_bokeh
@@ -113,9 +113,10 @@ services:
     container_name: hyrax
     image: opendap/hyrax:latest
     ports:
-      - "80:8080"
+      - "9090:8080"
     volumes:
       - ./volumes/pydap/data:/usr/share/hyrax
+    restart: always
 
   jupyter:
     build:
