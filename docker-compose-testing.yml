@@ -51,7 +51,7 @@ services:
     ports:
       - "7070:80"
     volumes:
-      - drupal_data:/var/www/html
+      - drupal7_data:/var/www/html
       - ./volumes/drupal/sites/all/modules/metsis_ts_bokeh:/var/www/html/sites/all/modules/metsis_ts_bokeh
     restart: always
     links:
@@ -152,8 +152,8 @@ volumes:
     name: solr_data
   postgres_data:
     name: postgres_data
-  drupal_data:
-    name: drupal_data
+  drupal7_data:
+    name: drupal7_data
   drupal8_data:
     name: drupal8_data
   pybasket_data:
