@@ -5,6 +5,7 @@ echo "####################################"
 echo "Building image drupal"
 echo "####################################"
 docker build -t epinux/metsis-drupal metsis-drupal/ ${1} ${2} ${3} ${4}
+docker build -f Dockerfile-drupal8 -t epinux/metsis-drupal metsis-drupal8/ ${1} ${2} ${3} ${4}
 echo "####################################"
 echo "Building image jupyter"
 echo "####################################"
