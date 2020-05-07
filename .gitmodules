@@ -1,0 +1,3 @@
+[submodule "volumes/drupal8/metsis_ts_bokeh"]
+	path = volumes/drupal8/metsis_ts_bokeh
+	url = https://github.com/magnarem/metsis_ts_bokeh
