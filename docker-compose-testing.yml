@@ -57,6 +57,23 @@ services:
     links:
       - fastapi
 
+  drupal8:
+    build:
+      context: ./metsis-drupal/
+      dockerfile: Dockerfile-drupal8
+    container_name: metsis_drupal8
+    image: epinux/metsis-drupal8
+    depends_on:
+      - postgres
+    ports:
+      - "7070:80"
+    volumes:
+      - drupal8_data:/var/www/html
+      - ./volumes/drupal8/metsis_ts_bokeh:/var/www/html/modules/metsis_ts_bokeh
+    restart: always
+    links:
+      - fastapi
+
   postgres:
     build:
       context: ./metsis-postgres/
@@ -67,7 +84,7 @@ services:
     hostname: postgres
     environment:
       POSTGRES_INITDB_ARGS: "-E UTF8"
-      POSTGRES_DB: drupal_db,csw_db,metsis_test
+      POSTGRES_DB: drupal_db,csw_db,metsis_test,drupal8_db
       POSTGRES_USER: metsis_user
       POSTGRES_PASSWORD: metsis_password
       LANGUAGE: "en_US.UTF-8"
@@ -136,6 +153,8 @@ volumes:
     name: postgres_data
   drupal_data:
     name: drupal_data
+  drupal8_data:
+    name: drupal8_data
   pybasket_data:
     name: pybasket_data
   pywps_data:
