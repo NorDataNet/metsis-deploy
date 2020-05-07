@@ -10,7 +10,9 @@ from bokeh.layouts import column
 from bokeh.models.tools import HoverTool
 from bokeh.models.widgets import Div
 # from bokeh.models.widgets import Paragraph
-# import bokeh.layouts
+from bokeh.layouts import layout
+from bokeh.models.widgets import Panel, Tabs
+
 from json2html import *
 
 def get_plottable_variables(nc_url):
@@ -69,22 +71,15 @@ def create_page(data):
                                           table_attributes="id=\"variable-metadata\" class=\"table table-bordered table-hover\"")
     title_div = Div(text="""<h1><b>{title}</b></h1>""".format(title=title))
 
-    abstract_text = Div(text="""<summary>Summary</summary>
-                                <p>{summary}</p>
-                                """.format(summary=summary),
-                        width=400,
-                        height=100,
-                        style={'font-size': '100%', 'color': 'blue'})
+    dataset_metadata_div = Div(text="""{dataset_metadata}""".format(dataset_metadata=dataset_metadata))
 
-    dataset_metadata_div = Div(text="""<p>{dataset_metadata}</p>""".format(dataset_metadata=dataset_metadata),
-                               style={'visibility': 'hidden'})
+    variable_metadata_div = Div(text="""<p>{variable_metadata}</p>""".format(variable_metadata=variable_metadata))
 
-    variable_metadata_div = Div(text="""<p>{variable_metadata}</p>""".format(variable_metadata=variable_metadata),
-                                style={'visibility': 'hidden'})
-
-    #plot_caption = Paragraph(text="""This text can be a figure caption.""",
-    #                         width=200,
-    #                         height=100)
-    widget = column(title_div, abstract_text, plot, variable_metadata_div, dataset_metadata_div) # plot_caption
-    widget.sizing_mode="stretch_width"
-    return widget
+    metadata_layout = layout([
+        [title_div],
+        [variable_metadata_div, dataset_metadata_div],
+    ], sizing_mode='stretch_width')
+    tab1 = Panel(child=plot, title="Plot")
+    tab2 = Panel(child=gridded_layout, title="Metadata")
+    tabs = Tabs(tabs=[tab1, tab2])
+    return tabs
