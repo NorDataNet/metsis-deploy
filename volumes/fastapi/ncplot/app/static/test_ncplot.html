@@ -3,18 +3,7 @@
 <script src="https://cdn.pydata.org/bokeh/release/bokeh-2.0.2.min.js"></script>
 <script src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.0.2.min.js"></script>
 <script src="https://cdn.pydata.org/bokeh/release/bokeh-tables-2.0.2.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <body>
-
-<style>
-    .dataTables_wrapper{
-   overflow:hidden;
-}
-button{
-   float:bottom;
-}
-
-</style>
 
 <script>
 function hideme(n) {
@@ -26,6 +15,8 @@ function hideme(n) {
   }
 }
 </script>
+
+
 
 <script>
     fetch('http://127.0.0.1:7000/ncplot/plot?get=param&resource_url=http://hyrax:8080/opendap/SN99938.nc')
@@ -61,11 +52,7 @@ function hideme(n) {
         }
     </script>
 
-        <div>
-            <button onclick="hideme('dataset-metadata')">Dataset Metadata</button>
-            <button onclick="hideme('variable-metadata')">Variable Metadata</button>
-            <div id="tsplot"></div>
-        </div>
+<div id="tsplot"></div>
 
 </body>
 </html>
