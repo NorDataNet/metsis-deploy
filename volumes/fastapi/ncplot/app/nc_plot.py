@@ -80,6 +80,6 @@ def create_page(data):
         [variable_metadata_div, dataset_metadata_div],
     ], sizing_mode='stretch_width')
     tab1 = Panel(child=plot, title="Plot")
-    tab2 = Panel(child=gridded_layout, title="Metadata")
+    tab2 = Panel(child=metadata_layout, title="Metadata")
     tabs = Tabs(tabs=[tab1, tab2])
     return tabs
