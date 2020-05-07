@@ -32,7 +32,7 @@ services:
     depends_on:
       - postgres
     ports:
-      - "8080:80"
+      - "7070:80"
     volumes:
       - drupal_data:/var/www/html
       - ./volumes/drupal7/sites/all/modules/metsis_ts_bokeh:/var/www/html/sites/all/modules/metsis_ts_bokeh
@@ -47,7 +47,7 @@ services:
     container_name: metsis_fastapi
     image: epinux/metsis-fastapi
     ports:
-      - "80:80"
+      - "7000:80"
     restart: always
     volumes:
       - ./volumes/fastapi/pybasket/config.yaml:/opt/basket/config.yaml
