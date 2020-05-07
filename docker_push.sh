@@ -1,4 +1,5 @@
-docker push epinux/metsis-drupal
+docker push epinux/metsis-drupal7
+docker push epinux/metsis-drupal8
 docker push epinux/metsis-postgres
 docker push epinux/metsis-fastapi
 docker push epinux/metsis-pydap
