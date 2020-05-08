@@ -84,7 +84,7 @@ services:
     hostname: postgres
     environment:
       POSTGRES_INITDB_ARGS: "-E UTF8"
-      POSTGRES_DB: drupal_db,csw_db,metsis_test,drupal8_db
+      POSTGRES_DB: drupal7_db,csw_db,drupal8_db
       POSTGRES_USER: metsis_user
       POSTGRES_PASSWORD: metsis_password
       LANGUAGE: "en_US.UTF-8"
