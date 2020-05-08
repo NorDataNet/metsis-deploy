@@ -39,9 +39,5 @@ echo "Building image hyrax"
 echo "####################################"
 docker build -t epinux/metsis-hyrax metsis-hyrax/ ${1} ${2} ${3} ${4}
 echo "####################################"
-echo "Building image pydap"
-echo "####################################"
-docker build -t epinux/metsis-pydap metsis-pydap/ ${1} ${2} ${3} ${4}
-echo "####################################"
 # Clean-up
 # docker rmi $(docker images -f "dangling=true" -q)

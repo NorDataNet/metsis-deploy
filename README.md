@@ -47,6 +47,9 @@ opendap/hyrax            latest         932MB
 ```
 **Built images**
 ```
+REPOSITORY               TAG            SIZE
+
+
 epinux/metsis-solr       latest         532MB
 epinux/metsis-pywps      latest         1.54GB
 epinux/metsis-pydap      latest         252MB
