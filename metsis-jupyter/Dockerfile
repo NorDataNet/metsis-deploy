@@ -77,6 +77,8 @@ RUN min-apk \
     py3-pillow \
     binutils \
     openssl \
+    proj \
+    proj-util \
     && apk add --no-cache netcdf hdf5 --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
 
 RUN apk add --no-cache --virtual .build-deps \
@@ -84,6 +86,8 @@ RUN apk add --no-cache --virtual .build-deps \
     python3-dev \
     zeromq-dev \
     libffi-dev \
+    proj-dev \
+    geos-dev \
     && apk add --no-cache --virtual .build-deps2 netcdf-dev hdf5-dev --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
     && pip3 install --upgrade pip setuptools \
     && pip3 install wheel \
@@ -98,6 +102,8 @@ RUN apk add --no-cache --virtual .build-deps \
     pandas \
     json2html \
     requests \
+    pygeometa \
+    owslib \
     && jupyter nbextension enable --py --sys-prefix widgetsnbextension \
     && apk del .build-deps && apk del .build-deps2 && \
     echo "### Cleanup unneeded files" && \
