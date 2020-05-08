@@ -113,7 +113,7 @@ services:
     build:
       context: ./metsis-hyrax/
       dockerfile: Dockerfile
-    container_name: hyrax
+    container_name: metsis_hyrax
     image: epinux/metsis-hyrax
     ports:
       - "9090:8080"
