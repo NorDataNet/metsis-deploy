@@ -121,6 +121,18 @@ services:
       - ./volumes/pydap/data:/usr/share/hyrax
     restart: always
 
+  pydap:
+    build:
+      context: ./metsis-pydap/
+      dockerfile: Dockerfile
+    container_name: metsis_pydap
+    image: epinux/metsis-pydap
+    ports:
+      - "9999:80"
+    volumes:
+      - ./volumes/pydap/data:/var/www/localhost/pydap/data
+    restart: unless-stopped
+
   jupyter:
     build:
       context: ./metsis-jupyter/
