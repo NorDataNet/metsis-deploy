@@ -110,8 +110,11 @@ services:
       - ./volumes/fastapi/ncplot/app:/app
 
   hyrax:
+    build:
+      context: ./metsis-hyrax/
+      dockerfile: Dockerfile
     container_name: hyrax
-    image: opendap/hyrax:latest
+    image: epinux/metsis-hyrax
     ports:
       - "9090:8080"
     volumes:
