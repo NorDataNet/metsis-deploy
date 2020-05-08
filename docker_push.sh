@@ -7,3 +7,4 @@ docker push epinux/metsis-pywps
 docker push epinux/metsis-solr
 docker push epinux/metsis-jupyter
 docker push epinux/metsis-pycsw
+docker push epinux/metsis-hyrax
