@@ -4,8 +4,8 @@
 echo "####################################"
 echo "Building image drupal"
 echo "####################################"
-docker build -t epinux/metsis-drupal metsis-drupal/ ${1} ${2} ${3} ${4}
-docker build -f Dockerfile-drupal8 -t epinux/metsis-drupal metsis-drupal8/ ${1} ${2} ${3} ${4}
+docker build -t epinux/metsis-drupal7 metsis-drupal/ ${1} ${2} ${3} ${4}
+docker build -f metsis-drupal/Dockerfile-drupal8 -t epinux/metsis-drupal8 metsis-drupal/ ${1} ${2} ${3} ${4}
 echo "####################################"
 echo "Building image jupyter"
 echo "####################################"
@@ -35,3 +35,7 @@ echo "Building image solr"
 echo "####################################"
 docker build -t epinux/metsis-solr metsis-solr/ ${1} ${2} ${3} ${4}
 echo "####################################"
+docker build -t epinux/metsis-hyrax metsis-hyrax/ ${1} ${2} ${3} ${4}
+echo "####################################"
+# Clean-up
+# docker rmi $(docker images -f "dangling=true" -q)
