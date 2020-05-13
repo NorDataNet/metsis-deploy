@@ -101,6 +101,8 @@ services:
       dockerfile: Dockerfile
     container_name: metsis_fastapi
     image: epinux/metsis-fastapi
+    environment:
+      DOWNLOAD_DIR: "/app/static/"
     ports:
       - "7000:80"
     restart: always
@@ -160,6 +162,16 @@ services:
       - ./volumes/pycsw/commands/pycsw_setup.sh:/usr/local/bin/pycsw_setup.sh
       - ./volumes/pycsw/commands/mmd2isofix.py:/usr/local/bin/mmd2isofix.py
       - ./volumes/pycsw/commands/mmd-to-iso.xsl:/usr/local/share/mmd-to-iso.xsl
+    restart: unless-stopped
+
+  pgadmin:
+    container_name:  pgadmin4
+    image:  dpage/pgadmin4
+    environment:
+        PGADMIN_DEFAULT_EMAIL: mail@domain.net
+        PGADMIN_DEFAULT_PASSWORD: pg_password
+    ports:
+      - "4040:80"
     restart: unless-stopped
 
 volumes:
