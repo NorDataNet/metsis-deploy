@@ -20,20 +20,41 @@ def get_plottable_variables(nc_url):
     return {"y_axis": [i for i in DS if len(DS[i].shape) == 1]}
 
 
-def get_data(nc_url, nc_variable, resample=None):
+def get_data_old(nc_url, nc_variable, resample=None):
     DS = xr.open_dataset(nc_url)
     df = DS.to_dataframe()
     df.replace(9.96921e+36, np.NaN, inplace=True)
     data = df[nc_variable]
     if resample:
         data = data.resample(resample).mean()
-    data=pd.DataFrame(data)
+    data = pd.DataFrame(data)
     data.dataset_metadata = ''
     data.dataset_metadata = DS.attrs
     data.variable_metadata = ''
     data.variable_metadata = DS[nc_variable].attrs
     return data
 
+
+def get_data(nc_url, nc_variable=None, resample=None):
+    ds = xr.open_dataset(nc_url)
+    df = ds.to_dataframe()
+    df.replace(9.96921e+36, np.NaN, inplace=True)
+    if nc_variable:
+        data = df[nc_variable]
+    else:
+        data=df
+    if resample:
+        data = data.resample(resample).mean()
+    data = pd.DataFrame(data)
+    data.dataset_metadata = ''
+    data.dataset_metadata = ds.attrs
+    if nc_variable:
+        data.variable_metadata = ''
+        data.variable_metadata = ds[nc_variable].attrs
+    else:
+        data.variable_metadata = ''
+        data.variable_metadata = {i: ds[i].attrs for i in ds}
+    return data
 
 def create_plot(data):
     data['tooltip'] = [x.strftime("%Y-%m-%d %H:%M:%S") for x in data.index]
