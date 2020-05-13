@@ -67,6 +67,20 @@ RUN min-apk \
     libressl \
     openssh-client \
     python3 \
+    binutils \
+    openssl \
+    proj \
+    proj-util \
+    geos \
+    freetype \
+    graphviz \
+    libxml2 \
+    libxslt \
+    ttf-freefont \
+    netcdf \
+    hdf5 \
+    gdal  \
+    py3-pip \
     py3-pygments \
     py3-cffi \
     py3-cryptography \
@@ -75,37 +89,61 @@ RUN min-apk \
     py3-pexpect \
     py3-tornado \
     py3-pillow \
-    binutils \
-    openssl \
-    proj \
-    proj-util \
-    && apk add --no-cache netcdf hdf5 --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
+    py3-numpy \
+    py3-scipy \
+    py3-pandas \
+    py3-geojson \
+    py3-lxml \
+    py3-gdal \
+    py3-shapely \
+    py3-rasterio \
+    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
 
 RUN apk add --no-cache --virtual .build-deps \
-    build-base \
-    python3-dev \
-    zeromq-dev \
-    libffi-dev \
-    proj-dev \
-    geos-dev \
-    && apk add --no-cache --virtual .build-deps2 netcdf-dev hdf5-dev --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+        build-base \
+        python3-dev \
+        zeromq-dev \
+        libffi-dev \
+        proj-dev \
+        geos-dev \
+        freetype-dev \
+        libxml2-dev \
+        libxslt-dev \
+        netcdf-dev \
+        hdf5-dev \
+        py3-numpy-dev \
+        gdal-dev \
+        --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+        --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+        --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
     && pip3 install --upgrade pip setuptools \
     && pip3 install wheel \
     && pip3 install \
-    notebook \
-    jupyter \
-    ipywidgets \
-    numpy \
-    xarray \
-    netCDF4 \
-    bokeh \
-    pandas \
-    json2html \
-    requests \
-    pygeometa \
-    owslib \
-    && jupyter nbextension enable --py --sys-prefix widgetsnbextension \
-    && apk del .build-deps && apk del .build-deps2 && \
+        notebook \
+        jupyter \
+        ipywidgets \
+        xarray \
+        netCDF4 \
+        bokeh \
+        json2html \
+        requests \
+        pygeometa \
+        owslib \
+        itsdangerous \
+        pysolr \
+        xmltodict \
+        prov \
+        shortid \
+        pydot \
+        cartopy \
+        rdflib \
+        rdflib-jsonld \
+    && jupyter nbextension enable --py --sys-prefix widgetsnbextension
+
+
+RUN apk del .build-deps &&  \
     echo "### Cleanup unneeded files" && \
     rm -rf /usr/lib/python3*/*/tests && \
     rm -rf /usr/lib/python3*/ensurepip && \
