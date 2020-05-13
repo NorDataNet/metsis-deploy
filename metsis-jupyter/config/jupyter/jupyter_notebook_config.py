@@ -16,7 +16,7 @@ c.JupyterApp.allow_origin = 'https://localhost:3000'
 c.NotebookApp.notebook_dir = 'notebooks'
 # needed to receive notebooks from the gallery
 c.JupyterApp.disable_check_xsrf = True
-
+c.NotebookApp.iopub_data_rate_limit = 1000000000
 # Update config from environment
 config_prefix = 'NBGALLERY_CONFIG_'
 for var in [x for x in os.environ if x.startswith(config_prefix)]:
