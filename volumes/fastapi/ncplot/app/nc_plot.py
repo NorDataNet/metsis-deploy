@@ -42,8 +42,8 @@ def get_data_old(nc_url, nc_variable, resample=None):
 
 
 def get_data(nc_url, nc_variable=None, resample=None):
-    ds = xr.open_dataset(nc_url)
-    df = ds.to_dataframe()
+    DS = xr.open_dataset(nc_url)
+    df = DS.to_dataframe()
     df.replace(9.96921e+36, np.NaN, inplace=True)
     if nc_variable:
         data = df[nc_variable]
@@ -53,15 +53,36 @@ def get_data(nc_url, nc_variable=None, resample=None):
         data = data.resample(resample).mean()
     data = pd.DataFrame(data)
     data.dataset_metadata = ''
-    data.dataset_metadata = ds.attrs
+    data.dataset_metadata = DS.attrs
+    # TODO: append an attributes to declare multi-indexed datasource
+    # it can be used to select plotting routine (time-series vs Vertical profiles)
     if nc_variable:
         data.variable_metadata = ''
-        data.variable_metadata = ds[nc_variable].attrs
+        data.variable_metadata = DS[nc_variable].attrs
     else:
         data.variable_metadata = ''
-        data.variable_metadata = {i: ds[i].attrs for i in ds}
+        data.variable_metadata = {i:DS[i].attrs for i in DS}
     return data
 
+
+def get_profile_data(nc_url, nc_variable='sal', levels=None):
+    profile = get_data(nc_url, nc_variable=nc_variable)
+    if not levels:
+        if len(profile.index.names) == 2:
+            z, t = profile.index.names
+        else:
+            raise ValueError
+    else:
+        z, t = levels
+    df = profile.swaplevel()
+    profile_dict = {str(v): df.loc[[df.index.get_level_values(0)[i]]].reset_index(level='time', drop=True)[nc_variable].values for i, v in enumerate(df.index.unique(level='time'))}
+    flat_df = pd.DataFrame.from_dict(profile_dict)
+    flat_df.index = df.index.unique(level='obsdepth')
+    flat_df.variable_metadata = ""
+    flat_df.dataset_metadata = ""
+    flat_df.variable_metadata = profile.variable_metadata
+    flat_df.dataset_metadata = profile.dataset_metadata
+    return flat_df
 
 def create_plot(data):
     data['tooltip'] = [x.strftime("%Y-%m-%d %H:%M:%S") for x in data.index]
