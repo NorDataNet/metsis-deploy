@@ -1,12 +1,12 @@
 import numpy as np
 import xarray as xr
-from bokeh.embed import json_item
+# from bokeh.embed import json_item
 import pandas as pd
-from bokeh.io import push_notebook, show, output_notebook
-from bokeh.layouts import row
+# from bokeh.io import push_notebook, show, output_notebook
+# from bokeh.layouts import row
 from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource #, Column
-from bokeh.layouts import column
+# from bokeh.layouts import column
 from bokeh.models.tools import HoverTool
 from bokeh.models.widgets import Div
 # from bokeh.models.widgets import Paragraph
@@ -15,23 +15,29 @@ from bokeh.models.widgets import Panel, Tabs
 
 from json2html import *
 
+def get_plottable_variables_old(nc_url):
+    ds = xr.open_dataset(nc_url)
+    return {"y_axis": [i for i in ds if len(ds[i].shape) == 1]}
+
+
 def get_plottable_variables(nc_url):
-    DS = xr.open_dataset(nc_url)
-    return {"y_axis": [i for i in DS if len(DS[i].shape) == 1]}
+    ds = xr.open_dataset(nc_url)
+    num_dim = len(ds.dims)
+    return {"y_axis": [i for i in ds if len(ds[i].shape) == num_dim]}
 
 
 def get_data_old(nc_url, nc_variable, resample=None):
-    DS = xr.open_dataset(nc_url)
-    df = DS.to_dataframe()
+    ds = xr.open_dataset(nc_url)
+    df = ds.to_dataframe()
     df.replace(9.96921e+36, np.NaN, inplace=True)
     data = df[nc_variable]
     if resample:
         data = data.resample(resample).mean()
     data = pd.DataFrame(data)
     data.dataset_metadata = ''
-    data.dataset_metadata = DS.attrs
+    data.dataset_metadata = ds.attrs
     data.variable_metadata = ''
-    data.variable_metadata = DS[nc_variable].attrs
+    data.variable_metadata = ds[nc_variable].attrs
     return data
 
 
@@ -55,6 +61,7 @@ def get_data(nc_url, nc_variable=None, resample=None):
         data.variable_metadata = ''
         data.variable_metadata = {i: ds[i].attrs for i in ds}
     return data
+
 
 def create_plot(data):
     data['tooltip'] = [x.strftime("%Y-%m-%d %H:%M:%S") for x in data.index]
