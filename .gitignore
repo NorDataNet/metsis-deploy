@@ -1,6 +1,7 @@
 *.pyc
 workdir/*
 outputs/*
+git_ignore/*
 logs/*
 .*.py~
 .*.yml~
