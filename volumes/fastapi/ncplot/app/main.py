@@ -1,12 +1,13 @@
 import requests
 from fastapi import FastAPI, HTTPException, BackgroundTasks
-
+from pathlib import Path
 try:
     from pydantic.networks import EmailStr
 except ImportError:
     from pydantic.types import EmailStr
 
-from app.nc_plot import get_plottable_variables, get_data, create_plot, create_page
+from app.nc_plot import get_plottable_variables, create_page
+from app.utils import get_data
 from bokeh.embed import components, json_item
 import json
 
@@ -16,10 +17,21 @@ from fastapi import FastAPI, Query, HTTPException
 
 # Adding import for file upload
 from typing import List
-from fastapi import File, UploadFile
-from fastapi.responses import HTMLResponse
+from fastapi import File, UploadFile, Response
+from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 
+import os
+from fastapi.responses import StreamingResponse
+from pathlib import Path
+
+def getstaticfolder():
+    current_file = Path(__file__)
+    current_file_dir = current_file.parent
+    project_root = current_file_dir.parent
+    project_root_absolute = project_root.resolve()
+    static_root_absolute = project_root_absolute / "static"
+    return static_root_absolute
 
 class Item(BaseModel):
     url: str
@@ -73,29 +85,56 @@ async def main():
 
 @app.get("/ncplot/plot")
 async def plot(*,
-                 resource_url: str = Query(...,title="Resource URL",
-                                  description="URL to a netcdf resource"),
-                 get: str = Query(...,title="Query string",
+                 resource_url: str = Query(...,
+                                           title="Resource URL",
+                                           description="URL to a netcdf resource"),
+                 get: str = Query(...,
+                                  title="Query string",
                                   description="Receive list of parameters or get the plot, specifying the variable name",
-                                  regex='^(param|plot)$'),
+                                  regex='^(param|plot|data)$'),
                  variable: str = Query(None,
                                        title="Variable name",
-                                       description="String with the NetCDF Variable name")):
+                                       description="String with the NetCDF Variable name"),
+                 output_format: str = Query(None,
+                                            title="output format",
+                                            description="output format",
+                                            regex='^(csv|nc)$')):
     if get == 'param':
         return get_plottable_variables(resource_url)
 
     if get == 'plot':
-        if not variable or variable not in get_plottable_variables(resource_url)["y_axis"]:
-            raise HTTPException(status_code=404, detail="Variable not found")
-        data = get_data(resource_url, variable, resample=None)
-        #json_plot = create_plot(data)
+        data = get_data(resource_url, variable)
+        # json_plot = create_plot(data)
         json_plot = create_page(data)
         json_data = json_item(json_plot, target='tsplot')
-        #json_data['test'] = "<b>BOLD</b>"
         return json_data
+    # https://github.com/tiangolo/fastapi/issues/376
+    # probably a good way to find out the root path for the app
+    # current_file = Path(__file__)
+    # current_file_dir = current_file.parent
+    # project_root = current_file_dir.parent
+    # project_root_absolute = project_root.resolve()
+    # static_root_absolute = project_root_absolute / "static"  # or wherever the static folder actually is.
     if get == 'data':
         if not variable or variable not in get_plottable_variables(resource_url)["y_axis"]:
             raise HTTPException(status_code=404, detail="Variable not found")
         data = get_data(resource_url, variable, resample=None)
-        return data
+        if not output_format:
+            output_format = 'csv'
+        outfile = Path(os.environ['DOWNLOAD_DIR'], 'out.csv')
+        compression_opts = dict(method='zip',
+                                archive_name='out.csv')
+        data.to_csv(outfile, compression=compression_opts)
+        # return data
+        return FileResponse(path=outfile, filename='out.csv.zip')
 
+
+@app.get("/ncplot/download")
+async def download(*,
+                 resource_string: str = Query(..., title="Input text",
+                                  description="some text to write into a file that can be ten served as a static file")):
+    #return os.listdir('/app')
+    outfile = os.path.join(os.environ['OUTPUT_DIR'], 'some_file.txt')
+    with open(outfile, 'w') as test:
+        test.write(resource_string)
+    return Response(content=data, media_type="application/zip")
