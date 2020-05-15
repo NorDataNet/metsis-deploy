@@ -28,3 +28,4 @@ _build/
 *.bz2
 *.pdf
 *.nc
+/volumes/jupyter/notebooks/git_ignore/
