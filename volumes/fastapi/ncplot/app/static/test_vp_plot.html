@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-2.0.2.min.js"></script>
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.0.2.min.js"></script>
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-tables-2.0.2.min.js"></script>
+<body>
+
+<script>
+function hideme(n) {
+  var x = document.getElementById(n);
+  if (x.style.visibility === "hidden") {
+    x.style.visibility = "visible";
+  } else {
+    x.style.visibility = "hidden";
+  }
+}
+</script>
+
+
+
+<script>
+    fetch('http://127.0.0.1:7000/ncplot/plot?get=param&resource_url=http://hyrax:8080/opendap/ctdiaoos_gi2007_2009.nc')
+  .then(response => response.json())
+  .then(data => {
+    for (const variable of data.x_axis) {
+      console.log(variable);
+      var el = document.createElement("option");
+      el.textContent = variable;
+      el.value = variable;
+      document.getElementById("var_selector").appendChild(el);
+    }
+  });
+</script>
+
+<select id="var_selector" name="source" onchange="myFunction()">
+     <option>Choose a variable</option>
+</select>
+
+    <script>
+        function myFunction() {
+            document.getElementById('tsplot').innerHTML = "";
+            var variable = document.getElementById("var_selector").value;
+        fetch(
+                'http://127.0.0.1:7000/ncplot/plot?get=plot&resource_url=http://hyrax:8080/opendap/ctdiaoos_gi2007_2009.nc&variable='+variable)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (item) {
+                Bokeh.embed.embed_item(item);
+            })
+
+        }
+    </script>
+
+<div id="tsplot"></div>
+
+</body>
+</html>
