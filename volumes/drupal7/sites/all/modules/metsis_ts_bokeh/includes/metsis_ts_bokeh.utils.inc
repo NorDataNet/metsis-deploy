@@ -64,13 +64,15 @@ function adc_get_ts_bokeh_plot_vars($uri) {
 function adc_get_ts_bokeh_plot_y_vars() {
   $ts_bokeh_plot_vars = adc_get_ts_bokeh_plot_vars($_SESSION['metsis_ts_bokeh'][session_id()]['metsis_ts_bokeh_data_uri']);
   $y_vars = $ts_bokeh_plot_vars['y_axis'];
+  if(empty($y_vars))
+    $y_vars = $ts_bokeh_plot_vars['x_axis'];
   ksort($y_vars);
   $hy_vars = [];
   foreach ($y_vars as $yv) {
     $hy_vars[$yv] = $yv;
   }
   return ($hy_vars);
-
+  unset($y_vars);
 }
 
 /**
