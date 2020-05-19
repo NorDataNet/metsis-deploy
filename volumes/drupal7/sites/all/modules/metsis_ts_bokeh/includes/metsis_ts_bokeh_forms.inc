@@ -13,6 +13,8 @@ function metsis_ts_bokeh_init_form($form, &$form_state) {
   $form['data_uri'] = [
     '#type' => 'textfield',
     '#title' => t("Enter service URL:"),
+    '#default_value' => 'http://127.0.0.1:7000/ncplot/plot?get=param&resource_url=https://thredds.met.no/thredds/dodsC/met.no/observations/stations/SN99938.nc',
+    '#maxlength' => 150,
     '#required' => TRUE,
   ];
   $form['actions'] = [
