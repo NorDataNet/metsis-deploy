@@ -1,6 +1,7 @@
 from app.nc_plot import get_plottable_variables, get_nc_data, get_vp_data
 from fastapi import HTTPException
 
+
 def get_data(resource_url, variable):
     try:
         plottable_variables = get_plottable_variables(resource_url)
