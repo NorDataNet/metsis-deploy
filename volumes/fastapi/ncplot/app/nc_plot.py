@@ -18,11 +18,28 @@ def get_plottable_variables(nc_url):
         axis_name = 'x_axis'
     else:
         axis_name = 'y_axis'
-    return {axis_name: [i for i in ds if len(ds[i].shape) == num_dims]}
+    var_dict = {axis_name: [i for i in ds if len(ds[i].shape) == num_dims]}
+    if len(var_dict[axis_name]) <= 0:
+        var_dict = {axis_name: [i for i in ds if len(ds[i].values.shape) != 0]}
+    return var_dict
+
+
+def get_plottable_data(nc_url):
+    ds = xr.open_dataset(nc_url)
+    variables = get_plottable_variables(nc_url)
+    data = {i: {'dims': ('n_levels'),
+                'data': ds[i].values,
+                'attrs': ds[i].attrs} for i in variables[list(variables.keys())[0]]}
+    dataset = xr.Dataset.from_dict(data)
+    dataset.attrs = ds.attrs
+    return dataset
 
 
 def get_nc_data(nc_url, nc_variable=None, resample=None):
     ds = xr.open_dataset(nc_url)
+    # TODO: the following is an hack to bypass bad/wird dataset
+    if 1 in [np.unique(ds[i]).shape[0] for i in ds.dims]:
+        ds = get_plottable_data(nc_url)
     data = ds.to_dataframe()
     data.replace(9.96921e+36, np.NaN, inplace=True)
     if nc_variable:
@@ -33,6 +50,7 @@ def get_nc_data(nc_url, nc_variable=None, resample=None):
     data.dataset_metadata = ''
     data.dataset_metadata = ds.attrs
     data.dataset_metadata['dimension'] = list(ds.dims)
+
     if nc_variable:
         data.variable_metadata = ''
         data.variable_metadata = ds[nc_variable].attrs
@@ -42,27 +60,26 @@ def get_nc_data(nc_url, nc_variable=None, resample=None):
     return data
 
 
-def get_vp_data(nc_url, nc_variable='sal', resample=None, levels=None):
+def get_vp_data(nc_url, nc_variable='sal', resample=None):
     profile = get_nc_data(nc_url, nc_variable=nc_variable)
-    if not levels:
-        if len(profile.index.names) == 2:
-            vertical_level, time_level = profile.index.names
-        else:
-            raise ValueError
-    else:
-        vertical_level, time_level = levels
-    df = profile.swaplevel()
-    profile_dict = {str(v): df.loc[[df.index.get_level_values(0)[i]]].reset_index(level=time_level, drop=True)[nc_variable].values for i, v in enumerate(df.index.unique(level=time_level))}
-    flat_df = pd.DataFrame.from_dict(profile_dict)
-    flat_df.index = df.index.unique(level=vertical_level)
-    flat_df.variable_metadata = ""
-    flat_df.dataset_metadata = ""
-    flat_df.variable_metadata = profile.variable_metadata
-    flat_df.dataset_metadata = profile.dataset_metadata
-    if 'featureType' not in flat_df.dataset_metadata:
-        flat_df.dataset_metadata['featureType'] = ''
-        flat_df.dataset_metadata['featureType'] = 'profile'
-    return flat_df
+
+    if len(profile.index.names) == 2:
+        vertical_level, time_level = profile.index.names
+        df = profile.swaplevel()
+        profile_dict = {str(v): df.loc[[df.index.get_level_values(0)[i]]].reset_index(level=time_level, drop=True)[
+            nc_variable].values for i, v in enumerate(df.index.unique(level=time_level))}
+        flat_df = pd.DataFrame.from_dict(profile_dict)
+        flat_df.index = df.index.unique(level=vertical_level)
+        flat_df.variable_metadata = ""
+        flat_df.dataset_metadata = ""
+        flat_df.variable_metadata = profile.variable_metadata
+        flat_df.dataset_metadata = profile.dataset_metadata
+        profile = flat_df
+
+    if 'featureType' not in profile.dataset_metadata:
+        profile.dataset_metadata['featureType'] = ''
+        profile.dataset_metadata['featureType'] = 'profile'
+    return profile
 
 
 def create_ts_plot(data):
