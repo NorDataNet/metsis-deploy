@@ -102,6 +102,10 @@ services:
     container_name: metsis_fastapi
     image: epinux/metsis-fastapi
     environment:
+      # TODO:
+      # needs a better solution, some hints:
+      # https://stackoverflow.com/questions/25862071/accessing-os-environment-variables-from-jinja2-template
+      # changing theurl below affects the download.html template
       DOWNLOAD_DIR: "/app/static/download"
     ports:
       - "7000:80"
