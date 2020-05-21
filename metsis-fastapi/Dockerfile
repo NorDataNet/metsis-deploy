@@ -25,6 +25,7 @@ RUN min-apk \
     py3-itsdangerous \
     py3-six \
     py3-urllib3 \
+    py3-simplejson \
     binutils \
     openssl \
     proj \
