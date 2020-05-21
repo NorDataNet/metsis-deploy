@@ -102,7 +102,7 @@ services:
     container_name: metsis_fastapi
     image: epinux/metsis-fastapi
     environment:
-      DOWNLOAD_DIR: "/app/static/"
+      DOWNLOAD_DIR: "/app/static/download"
     ports:
       - "7000:80"
     restart: always
