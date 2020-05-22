@@ -149,31 +149,32 @@ def create_vp_plot(data):
     return column(select, p, sizing_mode="stretch_width")
 
 
-def create_page(data):
+def create_page(data, metadata=True):
     if data.dataset_metadata['featureType'] == 'timeSeries':
         plot = create_ts_plot(data)
     if data.dataset_metadata['featureType'] == 'profile':
         plot = create_vp_plot(data)
-    try:
-        title = data.variable_metadata['long_name']
-    except KeyError:
-        title = data.variable_metadata['standard_name']
-    # summary = data.dataset_metadata['summary']
-    dataset_metadata = json2html.convert(json=data.dataset_metadata,
-                                         table_attributes="id=\"dataset-metadata\" ")
-    variable_metadata = json2html.convert(json=data.variable_metadata,
-                                          table_attributes="id=\"variable-metadata\" class=\"table table-bordered table-hover\"")
-    title_div = Div(text="""<h1><b>{title}</b></h1>""".format(title=title))
-
-    dataset_metadata_div = Div(text="""{dataset_metadata}""".format(dataset_metadata=dataset_metadata))
-
-    variable_metadata_div = Div(text="""<p>{variable_metadata}</p>""".format(variable_metadata=variable_metadata))
-
-    metadata_layout = layout([
-        [title_div],
-        [variable_metadata_div, dataset_metadata_div],
-    ], sizing_mode='stretch_width')
-    tab1 = Panel(child=plot, title="Plot")
-    tab2 = Panel(child=metadata_layout, title="Metadata")
-    tabs = Tabs(tabs=[tab1, tab2])
-    return tabs
+    # return here if do not want metadata tab
+    if metadata:
+        try:
+            title = data.variable_metadata['long_name']
+        except KeyError:
+            title = data.variable_metadata['standard_name']
+        # summary = data.dataset_metadata['summary']
+        dataset_metadata = json2html.convert(json=data.dataset_metadata,
+                                             table_attributes="id=\"dataset-metadata\" ")
+        variable_metadata = json2html.convert(json=data.variable_metadata,
+                                              table_attributes="id=\"variable-metadata\" class=\"table table-bordered table-hover\"")
+        title_div = Div(text="""<h1><b>{title}</b></h1>""".format(title=title))
+        dataset_metadata_div = Div(text="""{dataset_metadata}""".format(dataset_metadata=dataset_metadata))
+        variable_metadata_div = Div(text="""<p>{variable_metadata}</p>""".format(variable_metadata=variable_metadata))
+        metadata_layout = layout([
+            [title_div],
+            [variable_metadata_div, dataset_metadata_div],
+        ], sizing_mode='stretch_width')
+        tab1 = Panel(child=plot, title="Plot")
+        tab2 = Panel(child=metadata_layout, title="Metadata")
+        tabs = Tabs(tabs=[tab1, tab2])
+        return tabs
+    else:
+        return plot
