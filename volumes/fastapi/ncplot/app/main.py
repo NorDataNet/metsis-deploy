@@ -38,6 +38,7 @@ from fastapi import Request
 from fastapi.templating import Jinja2Templates
 from starlette.responses import RedirectResponse
 
+import confuse
 
 def getstaticfolder():
     current_file = Path(__file__)
@@ -68,6 +69,10 @@ app.add_middleware(
 )
 
 MAX_PROCESSING_SECOND = 600
+
+# config = confuse.Configuration('NcPlot', __name__)
+# config['ncplot']['download_directory'].get()
+Path(os.environ['DOWNLOAD_DIR']).mkdir(parents=True, exist_ok=True)
 
 app.mount("/static", StaticFiles(directory="./app/static"), name="static")
 templates = Jinja2Templates(directory="/app/templates")
@@ -104,19 +109,23 @@ async def download(*,
                                               description="output format",
                                               regex='^(csv|nc)$')):
     # list of variables
-    variables_items = {'variables': variable}
-    # check if the user provided valid parameters
+    if not variable:
+        plottable_variables = get_plottable_variables(resource_url)
+        axis = list(plottable_variables.keys())[0]
+        variables_items = {'variables': plottable_variables[axis]}
+    else:
+        variables_items = {'variables': variable}
+        # check if the user provided valid parameters
     valid_vars = []
     for i in variables_items['variables']:
-
         plottable_variables = get_plottable_variables(resource_url)
         axis = list(plottable_variables.keys())[0]
         if i in plottable_variables[axis]:
             valid_vars.append(i)
         else:
             print('removed:', i)
-    # create an empty list to append one dataframe for each variables
-    print(valid_vars)
+        # create an empty list to append one dataframe for each variables
+        print(valid_vars)
     data = []
     for i in valid_vars:
         # get_data is handling only variable selection at the moment
@@ -156,7 +165,8 @@ async def download(*,
         zip.write('metadata.csv', os.path.basename('metadata.csv'))
         zip.close()
         # the line below will return a direct download
-        # return FileResponse(path=outfile, filename='dataset.csv.zip')
+        # if os.path.isfile(outfile):
+        #     return FileResponse(path=outfile, filename='dataset.csv.zip')
         return RedirectResponse(url='/download/%s' % str(download_token))
     if output_format == 'nc':
         filename = str(uuid.uuid5(uuid.NAMESPACE_URL, 'download')) + '.' + str(output_format)
@@ -171,7 +181,8 @@ async def download(*,
         ds.to_netcdf(outfile)
         return RedirectResponse(url='/download/%s' % str(download_token))
         # the line below will return a direct download
-        # return FileResponse(path=outfile, filename='out.nc')
+        # if os.path.isfile(outfile):
+        #     return FileResponse(path=outfile, filename='out.nc')
 
 
 @app.get("/ncplot/plot")
