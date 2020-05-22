@@ -9,6 +9,7 @@ RUN min-apk \
     wget \
     nano \
     python3 \
+    py3-pip \
     sqlite \
     bzip2 \
     python3 \

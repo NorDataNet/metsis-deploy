@@ -66,7 +66,6 @@ RUN min-apk \
     bzip2 \
     libressl \
     openssh-client \
-    python3 \
     binutils \
     openssl \
     proj \
