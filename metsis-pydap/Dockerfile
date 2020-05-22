@@ -47,6 +47,7 @@ RUN apk add --no-cache \
     libxml2 \
     libxslt \
     python3 \
+    py3-pip\
     apache2 \
     apache2-ctl \
     apache2-mod-wsgi \
