@@ -60,6 +60,7 @@ RUN apk add --no-cache \
     python3 \
     sqlite \
     wget \
+    py3-pip \
     --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
     --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
