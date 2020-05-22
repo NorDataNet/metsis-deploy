@@ -142,6 +142,8 @@ async def download(*,
         suffixes = ['_' + i.variable_metadata['standard_name'] for i in data]
         df_final = reduce(lambda left, right: pd.merge(left, right, suffixes=suffixes, on=data[0].index.name), data)
     # generate a uuid for the filename
+    if not output_format:
+        output_format = 'csv'
     if output_format == 'csv':
         rv = base64.b64encode(uuid.uuid4().bytes).decode('utf-8')
         unique = re.sub(r'[\=\+\/]', lambda m: {'+': '-', '/': '_', '=': ''}[m.group(0)], rv)
