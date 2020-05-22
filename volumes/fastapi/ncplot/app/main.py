@@ -81,6 +81,8 @@ async def read_item(request: Request, id: str):
         return templates.TemplateResponse("download.html", {"request": request, "id": filename})
     except SignatureExpired:
         try:
+            # check if is a file
+            # Path(os.environ['DOWNLOAD_DIR'], str(id.rsplit('.', 2)[0])
             os.remove(Path(os.environ['DOWNLOAD_DIR'], str(id.rsplit('.', 2)[0])))
         except OSError:
             pass
@@ -183,13 +185,16 @@ async def plot(*,
                                   regex='^(param|plot)$'),
                  variable: str = Query(None,
                                        title="Variable name",
-                                       description="String with the NetCDF Variable name")):
+                                       description="String with the NetCDF Variable name"),
+                 metadata: bool = Query(False,
+                                       title="metadata",
+                                       description="If true add metadata tab to the plot widget")):
     if get == 'param':
         return get_plottable_variables(resource_url)
 
     if get == 'plot':
         data = get_data(resource_url, variable)
         # json_plot = create_plot(data)
-        json_plot = create_page(data)
+        json_plot = create_page(data, metadata=metadata)
         json_data = json_item(json_plot, target='tsplot')
         return json_data
