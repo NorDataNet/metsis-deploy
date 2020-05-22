@@ -59,7 +59,10 @@ RUN apk add --no-cache \
     proj-util \
     python3 \
     sqlite \
-    wget
+    wget \
+    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
 
 RUN apk add --no-cache --virtual .build-deps \
     build-base \
@@ -69,6 +72,9 @@ RUN apk add --no-cache --virtual .build-deps \
     postgresql-dev \
     proj-dev \
     python3-dev \
+    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
   && pip3 install --upgrade pip setuptools \
   && pip3 install wheel \
   && pip3 install \

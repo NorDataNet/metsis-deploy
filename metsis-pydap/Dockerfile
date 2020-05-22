@@ -50,14 +50,26 @@ RUN apk add --no-cache \
     apache2 \
     apache2-ctl \
     apache2-mod-wsgi \
-    && apk add --no-cache netcdf hdf5 --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
+    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
+    && apk add --no-cache netcdf hdf5 \
+    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
 
 RUN apk add --no-cache --virtual .build-deps \
     build-base \
     libxml2-dev \
     libxslt-dev \
     python3-dev \
-    && apk add --no-cache --virtual .build-deps2 netcdf-dev hdf5-dev --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
+    && apk add --no-cache --virtual .build-deps2 netcdf-dev hdf5-dev \
+    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
   && pip3 install --upgrade pip setuptools \
   && pip3 install wheel \
   && pip3 install \
