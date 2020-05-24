@@ -62,7 +62,9 @@ def get_nc_data(nc_url, nc_variable=None, resample=None):
 
 def get_vp_data(nc_url, nc_variable='sal', resample=None):
     profile = get_nc_data(nc_url, nc_variable=nc_variable)
-
+    if 'featureType' not in profile.dataset_metadata:
+        profile.dataset_metadata['featureType'] = ''
+        profile.dataset_metadata['featureType'] = 'profile'
     if len(profile.index.names) == 2:
         vertical_level, time_level = profile.index.names
         df = profile.swaplevel()
@@ -75,10 +77,9 @@ def get_vp_data(nc_url, nc_variable='sal', resample=None):
         flat_df.variable_metadata = profile.variable_metadata
         flat_df.dataset_metadata = profile.dataset_metadata
         profile = flat_df
-
-    if 'featureType' not in profile.dataset_metadata:
-        profile.dataset_metadata['featureType'] = ''
-        profile.dataset_metadata['featureType'] = 'profile'
+        if 'featureType' not in profile.dataset_metadata:
+            profile.dataset_metadata['featureType'] = ''
+            profile.dataset_metadata['featureType'] = 'timeSeriesProfile'
     return profile
 
 
