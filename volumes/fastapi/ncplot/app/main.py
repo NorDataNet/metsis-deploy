@@ -9,7 +9,10 @@ try:
 except ImportError:
     from pydantic.types import EmailStr
 
-from app.nc_plot import get_plottable_variables, create_page
+from app.nc_transform import get_plottable_variables
+from app.nc_plot import create_page
+
+
 from app.utils import get_data
 from bokeh.embed import json_item  # components
 import json
@@ -109,23 +112,21 @@ async def download(*,
                                               description="output format",
                                               regex='^(csv|nc)$')):
     # list of variables
+    plottable_variables = get_plottable_variables(resource_url)
+    axis = list(plottable_variables.keys())[0]
     if not variable:
-        plottable_variables = get_plottable_variables(resource_url)
-        axis = list(plottable_variables.keys())[0]
         variables_items = {'variables': plottable_variables[axis]}
     else:
         variables_items = {'variables': variable}
-        # check if the user provided valid parameters
+    # check if the user provided valid parameters
     valid_vars = []
     for i in variables_items['variables']:
-        plottable_variables = get_plottable_variables(resource_url)
-        axis = list(plottable_variables.keys())[0]
         if i in plottable_variables[axis]:
             valid_vars.append(i)
         else:
             print('removed:', i)
-        # create an empty list to append one dataframe for each variables
-        print(valid_vars)
+    print(valid_vars)
+    # create an empty list to append one dataframe for each variables
     data = []
     for i in valid_vars:
         # get_data is handling only variable selection at the moment
