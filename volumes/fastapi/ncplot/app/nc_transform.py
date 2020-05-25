@@ -27,6 +27,29 @@ def get_plottable_data(nc_url, level):
     dataset = dataset.assign_coords({level: ds[level]})
     return dataset
 
+# RESAMPLING
+#
+#
+# Frequency
+#
+# 'D' Calendar day
+# 'W' Weekly
+# 'M' Month end
+# 'Q' Quarter end
+# 'A' Year end
+# 'AS' Year start
+# 'H' Hourly frequency
+# 'T', min Minutely frequency
+#
+#
+# Methods
+#
+# 'max' Maximum data value
+# 'mean' Mean of values in time range
+# 'median' Median of values in time range
+# 'min' Minimum data value
+# 'std' Standard deviation of values
+# 'var' Variance of values
 
 def get_nc_data(nc_url, nc_variable=None, resample=None):
     ds = xr.open_dataset(nc_url)
