@@ -3,8 +3,14 @@
 <script src="https://cdn.pydata.org/bokeh/release/bokeh-2.0.2.min.js"></script>
 <script src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.0.2.min.js"></script>
 <script src="https://cdn.pydata.org/bokeh/release/bokeh-tables-2.0.2.min.js"></script>
-<body>
 
+<head>
+    <title>Download</title>
+    <link href="styles.css" rel="stylesheet">
+</head>
+
+<body>
+<div id="loader"></div>
 <script>
 function hideme(n) {
   var x = document.getElementById(n);
@@ -28,6 +34,7 @@ function hideme(n) {
       el.textContent = variable;
       el.value = variable;
       document.getElementById("var_selector").appendChild(el);
+      document.getElementById("loader").style.display = "none";
     }
   });
 </script>
@@ -39,6 +46,7 @@ function hideme(n) {
     <script>
         function myFunction() {
             document.getElementById('tsplot').innerHTML = "";
+            document.getElementById("loader").style.display = "block";
             var variable = document.getElementById("var_selector").value;
         fetch(
                 'http://127.0.0.1:7000/ncplot/plot?get=plot&resource_url=http://hyrax:8080/opendap/ctdiaoos_gi2007_2009.nc&metadata=true&variable='+variable)
@@ -47,6 +55,8 @@ function hideme(n) {
             })
             .then(function (item) {
                 Bokeh.embed.embed_item(item);
+                document.getElementById("loader").style.display = "none";
+                document.getElementById("tsplot").style.display = "block";
             })
 
         }
