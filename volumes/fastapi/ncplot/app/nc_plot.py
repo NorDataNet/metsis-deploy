@@ -7,8 +7,6 @@ from bokeh.layouts import layout, column #, row
 from bokeh.models.widgets import Panel, Tabs, Div
 from json2html import *
 
-# TODO:
-# Add X,Y labels (use latex and units from netcdf attrs)
 
 def create_ts_plot(data):
     data['tooltip'] = [x.strftime("%Y-%m-%d %H:%M:%S") for x in data.index]
@@ -19,13 +17,21 @@ def create_ts_plot(data):
         var_tooltip_label = str(data.variable_metadata['long_name'])
     except KeyError:
         var_tooltip_label = str(data.variable_metadata['standard_name'])
+    try:
+        units = list({'unit', 'units'}.intersection(data.variable_metadata))[0]
+        y_axis_label = " ".join([var_tooltip_label, '[', data.variable_metadata[units], ']'])
+    except IndexError:
+        print('no units found')
+        y_axis_label = var_tooltip_label
     p = figure(toolbar_location="above",
                x_axis_type="datetime",
-               tools=tools_to_show)  #
+               tools=tools_to_show,
+               x_axis_label='Date-Time',
+               y_axis_label=y_axis_label)  #
     p.sizing_mode = 'stretch_width'
     tooltips = [('Time', '@tooltip'),
                 (var_tooltip_label, var_label)
-               ]
+                ]
     hover = p.select(dict(type=HoverTool))
     hover.formatters = {'tooltip': "datetime"}
     hover.tooltips = tooltips
@@ -33,7 +39,7 @@ def create_ts_plot(data):
            y=data.columns[0],
            source=source,
            color='green',
-           legend_label=data.columns[0],
+           legend_label=var_tooltip_label,
            )
     p.min_border_left = 80
     p.min_border_right = 80
