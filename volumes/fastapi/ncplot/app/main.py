@@ -9,11 +9,10 @@ try:
 except ImportError:
     from pydantic.types import EmailStr
 
-from app.nc_transform import get_plottable_variables
 from app.nc_plot import create_page
 
 
-from app.utils import get_data
+from app.utils import get_data, get_variables
 from bokeh.embed import json_item  # components
 import json
 
@@ -112,7 +111,7 @@ async def download(*,
                                               description="output format",
                                               regex='^(csv|nc)$')):
     # list of variables
-    plottable_variables = get_plottable_variables(resource_url)
+    plottable_variables = get_variables(resource_url)
     axis = list(plottable_variables.keys())[0]
     if not variable:
         variables_items = {'variables': plottable_variables[axis]}
@@ -204,7 +203,7 @@ async def plot(*,
                                        title="metadata",
                                        description="If true add metadata tab to the plot widget")):
     if get == 'param':
-        return get_plottable_variables(resource_url)
+        return get_variables(resource_url)
 
     if get == 'plot':
         data = get_data(resource_url, variable)
