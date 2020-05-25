@@ -1,4 +1,7 @@
-from app.nc_plot import get_plottable_variables, get_nc_data, get_vp_data
+# from app.nc_plot import get_plottable_variables, get_nc_data, get_vp_data
+
+from app.nc_transform import get_plottable_variables, get_plottable_data, get_nc_data, get_vp_data
+
 from fastapi import HTTPException
 
 
