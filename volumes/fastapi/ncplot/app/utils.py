@@ -4,6 +4,12 @@ from app.nc_transform import get_plottable_variables, get_plottable_data, get_nc
 
 from fastapi import HTTPException
 
+def get_variables(resource_url):
+    try:
+        plottable_variables = get_plottable_variables(resource_url)
+        return plottable_variables
+    except IOError:
+        raise HTTPException(status_code=422, detail="URL To invalid or not supported NetCDF resource")
 
 def get_data(resource_url, variable):
     try:
