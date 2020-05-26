@@ -11,7 +11,7 @@ from json2html import *
 def create_ts_plot(data):
     data['tooltip'] = [x.strftime("%Y-%m-%d %H:%M:%S") for x in data.index]
     source = ColumnDataSource(data)
-    tools_to_show = "box_zoom, pan,save, hover, reset, wheel_zoom"
+    tools_to_show = "box_zoom, pan, save, hover, reset, wheel_zoom, crosshair"
     var_label = '@{'+str(data.columns[0]+'}')
     try:
         var_tooltip_label = str(data.variable_metadata['long_name'])
