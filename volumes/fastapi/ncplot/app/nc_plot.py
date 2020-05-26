@@ -1,9 +1,9 @@
 # from bokeh.embed import json_item
 # from bokeh.io import push_notebook, show, output_notebook
 from bokeh.plotting import figure
-from bokeh.models import ColumnDataSource, CustomJS, Select  #, Column
+from bokeh.models import ColumnDataSource, CustomJS, Select  # , Column
 from bokeh.models.tools import HoverTool
-from bokeh.layouts import layout, column #, row
+from bokeh.layouts import layout, column  # , row
 from bokeh.models.widgets import Panel, Tabs, Div
 from json2html import *
 
@@ -19,7 +19,8 @@ def create_ts_plot(data):
         var_tooltip_label = str(data.variable_metadata['standard_name'])
     try:
         units = list({'unit', 'units'}.intersection(data.variable_metadata))[0]
-        y_axis_label = " ".join([var_tooltip_label, '[', data.variable_metadata[units], ']'])
+        y_axis_label = " ".join(
+            [var_tooltip_label, '[', data.variable_metadata[units], ']'])
     except IndexError:
         print('no units found')
         y_axis_label = var_tooltip_label
@@ -111,8 +112,10 @@ def create_page(data, metadata=True):
         variable_metadata = json2html.convert(json=data.variable_metadata,
                                               table_attributes="id=\"variable-metadata\" class=\"table table-bordered table-hover\"")
         title_div = Div(text="""<h1><b>{title}</b></h1>""".format(title=title))
-        dataset_metadata_div = Div(text="""{dataset_metadata}""".format(dataset_metadata=dataset_metadata))
-        variable_metadata_div = Div(text="""<p>{variable_metadata}</p>""".format(variable_metadata=variable_metadata))
+        dataset_metadata_div = Div(text="""{dataset_metadata}""".format(
+            dataset_metadata=dataset_metadata))
+        variable_metadata_div = Div(
+            text="""<p>{variable_metadata}</p>""".format(variable_metadata=variable_metadata))
         metadata_layout = layout([
             [title_div],
             [variable_metadata_div, dataset_metadata_div],
