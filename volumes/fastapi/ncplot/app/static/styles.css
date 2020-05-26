@@ -51,3 +51,7 @@ h1 {
   display: none;
   text-align: center;
 }
+
+#var_selector {
+  margin-bottom: 15px;
+}
