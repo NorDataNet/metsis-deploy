@@ -100,5 +100,9 @@ def get_vp_data(nc_url, nc_variable='sal', resample=None):
         if 'featureType' not in profile.dataset_metadata:
             profile.dataset_metadata['featureType'] = ''
             profile.dataset_metadata['featureType'] = 'timeSeriesProfile'
+        # crazy dataset can have a nanosecond resolution and a step of
+        # hours which doen't add up to something that make sense
+        # here I resample the data column to a timestamp roundet at 1 second
+        profile.columns = pd.DatetimeIndex(profile.columns).round('1s')
     return profile
 
