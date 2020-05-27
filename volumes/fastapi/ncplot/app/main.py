@@ -1,6 +1,6 @@
-import requests
-from fastapi import FastAPI, HTTPException, Query  # BackgroundTasks
 from pathlib import Path
+
+from fastapi import FastAPI, Query  # BackgroundTasks
 from pydantic import BaseModel
 from starlette.middleware.cors import CORSMiddleware
 
@@ -11,14 +11,10 @@ except ImportError:
 
 from app.nc_plot import create_page
 
-
 from app.utils import get_data, get_variables
 from bokeh.embed import json_item  # components
-import json
 
 from typing import List
-from fastapi import File, UploadFile, Response
-from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 
 import os
@@ -40,7 +36,6 @@ from fastapi import Request
 from fastapi.templating import Jinja2Templates
 from starlette.responses import RedirectResponse
 
-import confuse
 
 def getstaticfolder():
     current_file = Path(__file__)

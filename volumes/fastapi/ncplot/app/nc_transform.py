@@ -1,7 +1,7 @@
 import numpy as np
-import xarray as xr
 import pandas as pd
-from json2html import *
+import xarray as xr
+
 
 def get_plottable_variables(nc_url):
     ds = xr.open_dataset(nc_url)
@@ -27,6 +27,7 @@ def get_plottable_data(nc_url, level):
     dataset = dataset.assign_coords({level: ds[level]})
     return dataset
 
+
 # RESAMPLING
 #
 #
@@ -50,6 +51,7 @@ def get_plottable_data(nc_url, level):
 # 'min' Minimum data value
 # 'std' Standard deviation of values
 # 'var' Variance of values
+
 
 def get_nc_data(nc_url, nc_variable=None, resample=None):
     ds = xr.open_dataset(nc_url)
@@ -103,6 +105,9 @@ def get_vp_data(nc_url, nc_variable='sal', resample=None):
         # crazy dataset can have a nanosecond resolution and a step of
         # hours which doen't add up to something that make sense
         # here I resample the data column to a timestamp roundet at 1 second
-        profile.columns = pd.DatetimeIndex(profile.columns).round('1s')
+        # profile.columns = pd.DatetimeIndex(profile.columns).round('1s')
+        keys = profile.columns.values
+        values = [str(i).rsplit('.')[0] for i in pd.DatetimeIndex(profile.columns).round('1s').values]
+        dictionary = dict(zip(keys, values))
+        profile.rename(columns=dictionary, inplace=True)
     return profile
-
