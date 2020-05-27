@@ -3,6 +3,7 @@ import pandas as pd
 import xarray as xr
 
 
+
 def get_plottable_variables(nc_url):
     ds = xr.open_dataset(nc_url)
     num_dims = len(ds.dims)

@@ -37,6 +37,7 @@ from fastapi.templating import Jinja2Templates
 from starlette.responses import RedirectResponse
 
 
+
 def getstaticfolder():
     current_file = Path(__file__)
     current_file_dir = current_file.parent
@@ -44,6 +45,7 @@ def getstaticfolder():
     project_root_absolute = project_root.resolve()
     static_root_absolute = project_root_absolute / "static"
     return static_root_absolute
+
 
 class Item(BaseModel):
     url: str
@@ -74,6 +76,7 @@ Path(os.environ['DOWNLOAD_DIR']).mkdir(parents=True, exist_ok=True)
 app.mount("/static", StaticFiles(directory="./app/static"), name="static")
 templates = Jinja2Templates(directory="/app/templates")
 
+
 @app.get("/download/{id}")
 async def read_item(request: Request, id: str):
     # TODO: check that the file  exist, if yes ..
@@ -85,7 +88,8 @@ async def read_item(request: Request, id: str):
         try:
             # check if is a file
             # Path(os.environ['DOWNLOAD_DIR'], str(id.rsplit('.', 2)[0])
-            os.remove(Path(os.environ['DOWNLOAD_DIR'], str(id.rsplit('.', 2)[0])))
+            os.remove(Path(os.environ['DOWNLOAD_DIR'],
+                           str(id.rsplit('.', 2)[0])))
         except OSError:
             pass
         return templates.TemplateResponse("expired.html", {"request": request, "id": id})
@@ -132,16 +136,19 @@ async def download(*,
     # merge the requested data in a single dataframe
     # suffixes = ['_'+i.variable_metadata['standard_name'] for i in data]
     try:
-        df_final = reduce(lambda left, right: pd.merge(left, right, suffixes=(False, False), on=data[0].index.name), data)
+        df_final = reduce(lambda left, right: pd.merge(
+            left, right, suffixes=(False, False), on=data[0].index.name), data)
     except ValueError:
         suffixes = ['_' + i.variable_metadata['standard_name'] for i in data]
-        df_final = reduce(lambda left, right: pd.merge(left, right, suffixes=suffixes, on=data[0].index.name), data)
+        df_final = reduce(lambda left, right: pd.merge(
+            left, right, suffixes=suffixes, on=data[0].index.name), data)
     # generate a uuid for the filename
     if not output_format:
         output_format = 'csv'
     if output_format == 'csv':
         rv = base64.b64encode(uuid.uuid4().bytes).decode('utf-8')
-        unique = re.sub(r'[\=\+\/]', lambda m: {'+': '-', '/': '_', '=': ''}[m.group(0)], rv)
+        unique = re.sub(
+            r'[\=\+\/]', lambda m: {'+': '-', '/': '_', '=': ''}[m.group(0)], rv)
         filename = str(unique) + '.' + str(output_format) + '.zip'
         # TODO: read the secret-key from a configuration file
         s = TimestampSigner('secret-key')
@@ -166,7 +173,8 @@ async def download(*,
         #     return FileResponse(path=outfile, filename='dataset.csv.zip')
         return RedirectResponse(url='/download/%s' % str(download_token))
     if output_format == 'nc':
-        filename = str(uuid.uuid5(uuid.NAMESPACE_URL, 'download')) + '.' + str(output_format)
+        filename = str(uuid.uuid5(uuid.NAMESPACE_URL, 'download')
+                       ) + '.' + str(output_format)
         s = TimestampSigner('secret-key')
         download_token = s.sign(filename).decode()
         # this stores the data in the 'DOWNLOAD_DIR' which is set in the docker-compose.yml instruction
@@ -184,19 +192,19 @@ async def download(*,
 
 @app.get("/ncplot/plot")
 async def plot(*,
-                 resource_url: str = Query(...,
-                                           title="Resource URL",
-                                           description="URL to a NetCDF resource"),
-                 get: str = Query(...,
-                                  title="Query string",
-                                  description="Receive list of parameters or get the plot, specifying the variable name",
-                                  regex='^(param|plot)$'),
-                 variable: str = Query(None,
-                                       title="Variable name",
-                                       description="String with the NetCDF Variable name"),
-                 metadata: bool = Query(False,
-                                       title="metadata",
-                                       description="If true add metadata tab to the plot widget")):
+               resource_url: str = Query(...,
+                                         title="Resource URL",
+                                         description="URL to a NetCDF resource"),
+               get: str = Query(...,
+                                title="Query string",
+                                description="Receive list of parameters or get the plot, specifying the variable name",
+                                regex='^(param|plot)$'),
+               variable: str = Query(None,
+                                     title="Variable name",
+                                     description="String with the NetCDF Variable name"),
+               metadata: bool = Query(False,
+                                      title="metadata",
+                                      description="If true add metadata tab to the plot widget")):
     if get == 'param':
         return get_variables(resource_url)
 
