@@ -1,10 +1,10 @@
 # from bokeh.embed import json_item
 # from bokeh.io import push_notebook, show, output_notebook
 from bokeh.plotting import figure
-from bokeh.models import ColumnDataSource, CustomJS, Select  # , Column
+from bokeh.models import ColumnDataSource, CustomJS, Select, Div, Spacer, Button, Label
 from bokeh.models.tools import HoverTool
-from bokeh.layouts import layout, column  # , row
-from bokeh.models.widgets import Panel, Tabs, Div
+from bokeh.layouts import layout, column, row
+from bokeh.models.widgets import Panel, Tabs
 from json2html import *
 
 
@@ -52,9 +52,9 @@ def create_vp_plot(data):
     # tools_to_show = "box_zoom, pan,save, hover, reset, wheel_zoom"
     var_label = '@{' + str(data.columns[0] + '}')
     p = figure(toolbar_location="above",
+               tools="crosshair,box_zoom, pan,save, reset, wheel_zoom",
                x_axis_type="linear")
     p.sizing_mode = 'stretch_width'
-    print(data.dataset_metadata['dimension'])
     if len(data.dataset_metadata['dimension']) == 2:
         try:
             vertical_level, time_level = data.dataset_metadata['dimension']
@@ -78,19 +78,118 @@ def create_vp_plot(data):
     p.y_range.flipped = True
     p.min_border_left = 80
     p.min_border_right = 80
+    p.background_fill_color = "SeaShell"
+    p.background_fill_alpha = 0.5
+
     line_renderer = p.line(data.columns[0],
                            vertical_level,
                            source=ds,
-                           color='green',
+                           line_alpha=0.6, color='RoyalBlue',
                            )
+
+    point_renderer = p.circle(data.columns[0],
+                              vertical_level,
+                              source=ds,
+                              color='RoyalBlue',
+                              size=3,
+                              fill_alpha=0.5,
+                              fill_color='white',
+                              )
+
     if len(list(data.columns)) >= 2:
-        select = Select(title="Profile-record:", options=list(data.columns))
-        handler = CustomJS(args=dict(line_renderer=line_renderer),
-                           code="""
-           line_renderer.glyph.x = {field: cb_obj.value};       
+        # Div
+        html_text = get_datetime_string(list(data.columns)[0])
+        par = Div(text=html_text)
+        # Slider Labels
+        end_label = Div(text=list(data.columns)[-1])
+        start_label = Div(text=list(data.columns)[0])
+        # Buttons
+        left_btn = Button(label='<', width=30)
+        right_btn = Button(label='>', width=30)
+        # Spacer
+        sp = Spacer(width=50)
+        # Slider Labels
+        end_label = Div(text='<p style="text-align:right;">' +
+                        list(data.columns)[-1].split('T')[0] +
+                        '<br>'
+                        + list(data.columns)[-1].split('T')[1] +
+                        '</p>')
+        start_label = Div(text='<p style="text-align:left;">' +
+                          list(data.columns)[0].split('T')[0] +
+                          '<br>'
+                          + list(data.columns)[0].split('T')[1] +
+                          '</p>')
+
+        select = Select(title="Profile-record:",
+                        options=list(data.columns),
+                        value=list(data.columns)[0])
+        slider = Slider(title="Profile #",
+                        value=0,
+                        start=0,
+                        end=len(data.columns) - 1,
+                        step=1,
+                        show_value=True,
+                        tooltips=False)
+
+        select_handler = CustomJS(args=dict(line_renderer=line_renderer,
+                                            point_renderer=point_renderer,
+                                            slider=slider,
+                                            par=par),
+                                  code="""
+           line_renderer.glyph.x = {field: cb_obj.value};
+           point_renderer.glyph.x = {field: cb_obj.value};
+           slider.value = cb_obj.options.indexOf(cb_obj.value);
+           var date_time = cb_obj.value.split("T");
+           var date = date_time[0];
+           var time = date_time[1];
+           par.text = `<ul><li>Date: <b>`+date+`</b></li><li>Time: <b>`+time+`</b></li></ul>`;
+           console.log(date, time);
         """)
-        select.js_on_change('value', handler)
-        return column(select, p, sizing_mode="stretch_width")
+        select.js_on_change('value', select_handler)
+
+        slider_handler = CustomJS(args=dict(select=select),
+                                  code="""
+           select.value = select.options[cb_obj.value];
+        """)
+
+        slider.js_on_change('value', slider_handler)
+
+        # Left button cb
+        left_btn_args = dict(slider=slider)
+        left_btn_handler = """
+        if(slider.value > slider.start) {
+            slider.value = slider.value - 1;
+            slider.change.emit();
+        }
+        """
+        left_btn_callback = CustomJS(args=left_btn_args, code=left_btn_handler)
+        left_btn.js_on_click(left_btn_callback)
+
+        # Right button cb
+        right_btn_args = dict(slider=slider)
+        right_btn_handler = """
+        if(slider.value <= slider.end - 1) {
+            slider.value = slider.value + 1;
+            slider.change.emit();
+        }
+        """
+        right_btn_callback = CustomJS(
+            args=right_btn_args, code=right_btn_handler)
+        right_btn.js_on_click(right_btn_callback)
+
+        # buttons = row(left_btn, right_btn)
+        # inputs = row(sp,slider,buttons, par)
+        # return column(select, slider, p, par, sizing_mode="stretch_width")
+        # return column(p, select, inputs, sizing_mode="stretch_width")
+        # Set up layouts and add to document
+        slider_wrapper = layout([
+            [slider],
+            [start_label, Spacer(sizing_mode="stretch_width"), end_label]
+        ])
+        buttons = row(left_btn, right_btn)
+        inputs = row(sp, slider_wrapper, buttons, par)
+
+        return column(select, p, inputs)
     else:
         return column(p, sizing_mode="stretch_width")
 
