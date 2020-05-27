@@ -30,7 +30,7 @@ services:
     container_name: metsis_pywps
     image: epinux/metsis-pywps
     ports:
-      - "5000:80"
+      - "5000:5000"
     volumes:
       - ./volumes/pywps/processes:/pywps-flask/processes
       - ./volumes/pywps/data:/pywps-flask/data
