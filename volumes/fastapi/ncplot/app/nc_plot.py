@@ -1,7 +1,7 @@
 # from bokeh.embed import json_item
 # from bokeh.io import push_notebook, show, output_notebook
 from bokeh.plotting import figure
-from bokeh.models import ColumnDataSource, CustomJS, Select, Div, Spacer, Button, Label
+from bokeh.models import ColumnDataSource, CustomJS, Select, Slider, Div, Spacer, Button, Label
 from bokeh.models.tools import HoverTool
 from bokeh.layouts import layout, column, row
 from bokeh.models.widgets import Panel, Tabs
