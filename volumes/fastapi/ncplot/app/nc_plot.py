@@ -46,6 +46,10 @@ def create_ts_plot(data):
     p.min_border_right = 80
     return p
 
+def get_datetime_string(datetime, splitter='T'):
+    date = datetime.split(splitter)[0]
+    time = datetime.split(splitter)[1]
+    return f"<ul><li>Date: <b>{date}</b></li><li>Time: <b>{time}</b></li></ul>"
 
 def create_vp_plot(data):
     ds = ColumnDataSource(data)
