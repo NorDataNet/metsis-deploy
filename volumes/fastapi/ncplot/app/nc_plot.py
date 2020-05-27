@@ -69,9 +69,21 @@ def create_vp_plot(data):
     ds = ColumnDataSource(data)
     # tools_to_show = "box_zoom, pan,save, hover, reset, wheel_zoom"
     var_label = '@{' + str(data.columns[0] + '}')
+    try:
+        var_tooltip_label = str(data.variable_metadata['long_name'])
+    except KeyError:
+        var_tooltip_label = str(data.variable_metadata['standard_name'])
+    try:
+        units = list({'unit', 'units'}.intersection(data.variable_metadata))[0]
+        x_axis_label = " ".join(
+            [var_tooltip_label, '[', data.variable_metadata[units], ']'])
+    except IndexError:
+        print('no units found')
+        x_axis_label = var_tooltip_label
     p = figure(toolbar_location="above",
                tools="crosshair,box_zoom, pan,save, reset, wheel_zoom",
-               x_axis_type="linear")
+               x_axis_type="linear",
+               x_axis_label=x_axis_label)
     p.sizing_mode = 'stretch_width'
     if len(data.dataset_metadata['dimension']) == 2:
         try:
