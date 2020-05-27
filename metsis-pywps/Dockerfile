@@ -85,7 +85,8 @@ RUN apt-get install -y python3-sqlalchemy \
                        python3-requests \
                        python3-werkzeug
 
-RUN git clone https://github.com/geopython/pywps && cd pywps && pip3 install . && cd .. && rm -rf pywps
+RUN pip3 install pywps
+# RUN git clone https://github.com/geopython/pywps && cd pywps && pip3 install . && cd .. && rm -rf pywps
 # git+https://github.com/geopython/pywps
 RUN pip3 install -r requirements.txt
 RUN pip3 install grass-session
@@ -132,9 +133,10 @@ RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y \
 
 
 
-EXPOSE 80
-CMD ["apachectl", "-D", "FOREGROUND", "-e", "info"]
-#CMD ["python3", "/pywps-flask/demo.py", "-a"]
+EXPOSE 5000
+# CMD ["apachectl", "-D", "FOREGROUND", "-e", "info"]
+# CMD ["python3", "/pywps-flask/demo.py", "-a"]
+CMD ["/usr/bin/python3", "/pywps-flask/demo.py", "-a", "-p", "5000"]
 
 
 
