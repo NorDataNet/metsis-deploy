@@ -171,7 +171,6 @@ def create_vp_plot(data):
            var date = date_time[0];
            var time = date_time[1];
            par.text = `<ul style="text-align:left;"><li>Date: <b>`+date+`</b></li><li>Time: <b>`+time+`</b></li></ul>`;
-           console.log(date, time);
         """)
         select.js_on_change('value', select_handler)
         slider_handler = CustomJS(args=dict(select=select),
