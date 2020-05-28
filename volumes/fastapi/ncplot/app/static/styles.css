@@ -1,3 +1,33 @@
+* {
+  box-sizing: border-box;
+}
+
+
+.Row {
+  display: table;
+}
+.Column {
+  display: table-cell;
+}
+
+#ncinput_label
+{
+   width:150px; /* or whatever width you want. */
+   max-width:150px; /* or whatever width you want. */
+   display: inline-block;
+}
+
+
+#ncinput_submit
+{
+  margin-top: 10px;
+  margin-right: 50px;
+  margin-bottom: 30px;
+  width:100px; /* or whatever width you want. */
+  max-width:150px; /* or whatever width you want. */
+  display: inline-block;
+}
+
 h1 {
     color: green;
 }

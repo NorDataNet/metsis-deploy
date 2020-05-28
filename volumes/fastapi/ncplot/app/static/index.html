@@ -1,17 +1,114 @@
+<!DOCTYPE html>
 <html>
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-2.0.2.min.js"></script>
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.0.2.min.js"></script>
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-tables-2.0.2.min.js"></script>
+ 
+<meta charset="UTF-8">
+<meta name="NetCDF Plotting widget" content="Plotting widget for NetCDF - API based on FastAPI+Xarray+Pandas+Bokeh">
+<meta name="keywords" content="python,netcdf,bokeh,xarray,pandas">
+<meta name="author" content="Massimo Di Stefano">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <head>
     <title>NC-Plot</title>
     <link href="styles.css" rel="stylesheet">
     <link rel='shortcut icon' type='image/x-icon' href='favicon.ico' />
 </head>
+
 <body>
-<h1>Testing Bokeh widget for plotting NetCDF of different feature type:</h1>
-<br>
-<h2><a href=test_profile_plot.html><b>Profile</b></a></h2>
-    <br>
-<h2><a href=test_timeSeriesProfile_plot.html><b>timeSeriesProfile</b></a></h2>
-    <br>
-<h2><a href=test_timeSeries_plot.html><b>timeSeries</b></a></h2>
-    <br>
+
+<div id="loader"></div>
+
+<div class="Row">
+
+<div id="ncinput_label" class="Column">
+  <label for="nc">NetCDF URL:</label>
+</div>
+
+<div id="ncinput_text" class="Column">
+<input type="text" size="60" id="nc" list='nc.list' />
+<datalist id="nc.list">
+  <option>http://hyrax:8080/opendap/SN99938.nc</option>
+  <option>http://hyrax:8080/opendap/ctdiaoos_gi2007_2009.nc</option>
+  <option>http://hyrax:8080/opendap/itp01_itp1grd2042.nc</option>
+</datalist>
+</div>
+
+</div>
+
+<div class="Row">
+<div id="ncinput_submit" class="Column">
+  <button onclick="getParam()">Get variables</button>
+</div>
+<select id="var_selector" name="source" onchange="myFunction()" class="Column">
+     <option>Choose a variable</option>
+</select>
+
+</div>
+
+<div id="tsplot" class="Row"></div>
+
+<script>
+document.getElementById("loader").style.display = "none";
+</script>
+<script>
+function hideme(n) {
+  var x = document.getElementById(n);
+  if (x.style.visibility === "hidden") {
+    x.style.visibility = "visible";
+  } else {
+    x.style.visibility = "hidden";
+  }
+}
+</script>
+
+<script>
+function getParam() {
+  document.getElementById("loader").style.display = "block";
+  while (document.getElementById("var_selector").options.length) document.getElementById("var_selector").remove(0);
+  var el = document.createElement("option");
+  el.textContent = 'Choose a variable';
+  el.value = 'Choose a variable';
+  document.getElementById("var_selector").appendChild(el);
+  var nc_url = document.getElementById("nc");
+  console.log(nc_url.value)
+    fetch('http://127.0.0.1:7000/ncplot/plot?get=param&resource_url='+nc_url.value)
+  .then(response => response.json())
+  .then(data => {
+    for (const variable of data[Object.keys(data)]) {
+      console.log(variable);
+      var el = document.createElement("option");
+      el.textContent = variable;
+      el.value = variable;
+      document.getElementById("var_selector").appendChild(el);
+      document.getElementById("loader").style.display = "none";
+    }
+  });
+  console.log(nc_url.value);
+}
+</script>
+
+    <script>
+        function myFunction() {
+            var nc_url = document.getElementById("nc");
+            document.getElementById('tsplot').innerHTML = "";
+            document.getElementById("loader").style.display = "block";
+            var variable = document.getElementById("var_selector").value;
+        fetch(
+                'http://127.0.0.1:7000/ncplot/plot?get=plot&resource_url='+nc_url.value+'&metadata=true&variable='+variable)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (item) {
+                Bokeh.embed.embed_item(item);
+                document.getElementById("loader").style.display = "none";
+                document.getElementById("tsplot").style.display = "block";
+            })
+
+        }
+    </script>
+
+
 </body>
 </html>
