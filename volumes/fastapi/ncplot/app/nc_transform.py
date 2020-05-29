@@ -7,11 +7,12 @@ import xarray as xr
 def get_plottable_variables(nc_url):
     ds = xr.open_dataset(nc_url)
     num_dims = len(ds.dims)
-    if num_dims >= 2:
+    num_coords = len(ds.coords)
+    if num_dims >= 2 and num_coords >=2:
         axis_name = 'x_axis'
     else:
         axis_name = 'y_axis'
-    var_dict = {axis_name: [i for i in ds if len(ds[i].shape) == num_dims]}
+    var_dict = {axis_name: [i for i in ds if len(ds[i].shape) == num_coords]}
     if len(var_dict[axis_name]) <= 0:
         var_dict = {axis_name: [i for i in ds if len(ds[i].values.shape) != 0]}
     return var_dict
@@ -59,7 +60,10 @@ def get_nc_data(nc_url, nc_variable=None, resample=None):
     # TODO: the following is an hack to bypass bad/weird dataset
     if len(ds.coords) != len(ds.dims):
         valid_levels = [i for i in ds.dims if np.unique(ds[i]).shape[0] != 1]
-        ds = get_plottable_data(nc_url, valid_levels[0])
+        try:
+            ds = get_plottable_data(nc_url, valid_levels[0])
+        except ValueError:
+            ds = get_plottable_data(nc_url, valid_levels[1])
         if len(valid_levels) >= 2:
             print('WORNING, skipping:', valid_levels[1:], 'dimensions')
 
