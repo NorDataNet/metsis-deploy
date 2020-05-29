@@ -80,6 +80,10 @@ def get_nc_data(nc_url, nc_variable=None, resample=None):
     else:
         data.variable_metadata = ''
         data.variable_metadata = {i: ds[i].attrs for i in ds}
+
+    if 'featureType' not in data.dataset_metadata:
+        if len(ds.dims) == 1:
+            data.dataset_metadata['featureType'] = 'timeSeries'
     return data
 
 
