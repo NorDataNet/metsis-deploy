@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Execute operation request assuming use of default formats, and RawDataOutput.-->
+<!-- Equivalent GET request is 
+			Service=WPS&
+			Version=1.0.0&
+			Language=en&
+			Request=Execute&
+			Identifier=firstInstance
+-->
+<wps:Execute service="WPS" version="1.0.0" xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wps/1.0.0/wpsExecute_request.xsd">
+	<ows:Identifier>bundler</ows:Identifier>
+        <wps:DataInputs>
+            <wps:Input>
+                <ows:Identifier>inputfiles</ows:Identifier>
+                <wps:Data>
+                    <wps:LiteralData>http://thredds.met.no/thredds/fileServer/cryoclim/met.no/osisaf-nh/osisaf-nh_aggregated_ice_concentration_nh_polstere-100_197810010000.nc</wps:LiteralData>
+                </wps:Data>
+            </wps:Input>
+            <wps:Input>
+                <ows:Identifier>inputfiles</ows:Identifier>
+                <wps:Data>
+                    <wps:LiteralData>http://www.travel-babbles.com/wp-content/uploads/2014/07/baby-size-of-avocado.jpg</wps:LiteralData>
+                </wps:Data>
+            </wps:Input>
+            <wps:Input>
+                <ows:Identifier>userid</ows:Identifier>
+                <wps:Data>
+                    <wps:LiteralData>12345</wps:LiteralData>
+                </wps:Data>
+            </wps:Input>   
+            <wps:Input>
+                <ows:Identifier>useremail</ows:Identifier>
+                <wps:Data>
+                    <wps:LiteralData>eivinds@met.no</wps:LiteralData>
+                </wps:Data>
+            </wps:Input>                                 
+        </wps:DataInputs>
+</wps:Execute>

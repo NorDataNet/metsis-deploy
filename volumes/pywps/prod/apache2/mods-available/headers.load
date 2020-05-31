@@ -1,0 +1,2 @@
+LoadModule headers_module /usr/lib/apache2/modules/mod_headers.so
+RequestHeader unset Proxy early
