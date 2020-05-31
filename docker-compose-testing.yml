@@ -23,6 +23,24 @@ services:
       - "-c"
       - "precreate-core nbs-l1 /opt/solr/server/solr/configsets/myconfig ; precreate-core nbs-l2 /opt/solr/server/solr/configsets/myconfig; precreate-core nbs-thumbnail /opt/solr/server/solr/configsets/myconfig; exec solr -f"
 
+
+  fimex-wps:
+    build:
+      context: ./metsis-pywps/
+      dockerfile: Dockerfile
+    container_name: metsis_pywps_xenial
+    image: epinux/metsis-pywps-xenial
+    ports:
+      - "6000:80"
+    volumes:
+      - ./volumes/pywps/prod/html:/var/www/html
+      - ./volumes/pywps/prod/apache2:/etc/apache2
+      - ./volumes/pywps/prod/wps:/usr/local/wps
+      - ./volumes/pywps/prod/cgi-bin:/usr/lib/cgi-bin
+      - ./volumes/pywps/prod/dev:/usr/local/dev
+    restart: unless-stopped
+
+
   pywps:
     build:
       context: ./metsis-pywps/
