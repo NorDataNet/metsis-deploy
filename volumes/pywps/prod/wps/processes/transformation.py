@@ -410,6 +410,7 @@ class Process(WPSProcess):
            	self.status.set('{}'.format(err.output,))
             	return "Fimex error: {}".format(err.output,)+"\n From fimex command: {}".format(" ".join(err.cmd),)
             else:
-            	self.urlout.setValue("http://157.249.177.189"+output_filename[13:])
+                # TODO: this shouild be configurable, avoid to have IP exposed on public repository - replacing with localhost
+            	self.urlout.setValue("http://localhost"+output_filename[13:])
             	self.status.set("Fimex completed successfully")
             	return 0
