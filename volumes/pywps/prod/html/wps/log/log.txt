@@ -1,0 +1,53 @@
+PyWPS [2020-06-02 08:32:00,397] DEBUG: {'responseform': {'rawdataoutput': {}, 'responsedocument': {'status': True, 'outputs': [], 'storeexecuteresponse': True}}, 'service': 'wps', 'language': 'en-CA', 'request': 'execute', 'version': u'1.0.0', 'datainputs': [{'dataType': '', 'identifier': u'inputfile', 'value': 'http://thredds.met.no/thredds/dodsC/aromearcticlatest/arome_arctic_pp_2_5km_latest.nc', 'uom': ''}, {'dataType': '', 'identifier': u'inputtype', 'value': 'nc', 'uom': ''}, {'dataType': '', 'identifier': u'reducetimeStart', 'value': '2018-02-20T06:00:00', 'uom': ''}, {'dataType': '', 'identifier': u'reducetimeEnd', 'value': '2018-02-21T00:00:00', 'uom': ''}, {'dataType': '', 'identifier': u'selectVariables', 'value': 'wind_speed_of_gust', 'uom': ''}, {'dataType': '', 'identifier': u'selectVariables', 'value': 'air_temperature_2m', 'uom': ''}, {'dataType': '', 'identifier': u'interpolateMethod', 'value': 'nearestneighbor', 'uom': ''}, {'dataType': '', 'identifier': u'interpolateProjString', 'value': '+proj=stere +lat_0=-90 +lon_0=0 +lat_ts=-71 +ellps=WGS84 +datum=WGS84 +units=m', 'uom': ''}, {'dataType': '', 'identifier': u'interpolateXAxisMin', 'value': '16207098.291563964', 'uom': ''}, {'dataType': '', 'identifier': u'interpolateXAxisMax', 'value': '46113383.316316284', 'uom': ''}, {'dataType': '', 'identifier': u'interpolateYAxisMin', 'value': '91915021.88970396', 'uom': ''}, {'dataType': '', 'identifier': u'interpolateYAxisMax', 'value': '26623574.270919614', 'uom': ''}, {'dataType': '', 'identifier': u'interpolateHorSteps', 'value': '100', 'uom': ''}, {'dataType': '', 'identifier': u'interpolateVerSteps', 'value': '100', 'uom': ''}, {'dataType': '', 'identifier': u'interpolateXAxisUnits', 'value': 'm', 'uom': ''}, {'dataType': '', 'identifier': u'interpolateYAxisUnits', 'value': 'm', 'uom': ''}], 'identifier': [u'transformation']}
+PyWPS [2020-06-02 08:32:00,400] INFO: MapScript could not be loaded, mapserver not supported: No module named mapscript
+PyWPS [2020-06-02 08:32:00,425] INFO: Reading processes from directory [/usr/local/wps/processes/]
+PyWPS [2020-06-02 08:32:00,431] INFO: Following processes are imported: ['bundler', 'transformation']
+PyWPS [2020-06-02 08:32:00,433] INFO: Status [processaccepted]: Process transformation accepted
+PyWPS [2020-06-02 08:32:00,433] DEBUG: Store and Status are both set to True, let's be async
+PyWPS [2020-06-02 08:32:00,447] DEBUG: PickleFile: /tmp/state-pywps-8742eb9a-a4ab-11ea-8815-0242ac120002
+PyWPS [2020-06-02 08:32:00,447] INFO: Spawning process to the background
+PyWPS [2020-06-02 08:32:00,447] DEBUG: Nah, no mod_wsgi here. Move along
+PyWPS [2020-06-02 08:32:00,454] INFO: This is parent process, end.
+PyWPS [2020-06-02 08:32:00,555] INFO: Spawn process started, continuting to execute the process
+PyWPS [2020-06-02 08:32:00,558] INFO: Reading processes from directory [/usr/local/wps/processes/]
+PyWPS [2020-06-02 08:32:00,565] INFO: Following processes are imported: ['bundler', 'transformation']
+PyWPS [2020-06-02 08:32:00,568] INFO: Status [processpaused]: Getting input inputfile of process transformation
+PyWPS [2020-06-02 08:32:00,570] INFO: Status [processpaused]: Getting input inputtype of process transformation
+PyWPS [2020-06-02 08:32:00,571] INFO: Status [processpaused]: Getting input outputType of process transformation
+PyWPS [2020-06-02 08:32:00,573] INFO: Status [processpaused]: Getting input reducetimeStart of process transformation
+PyWPS [2020-06-02 08:32:00,574] INFO: Status [processpaused]: Getting input reducetimeEnd of process transformation
+PyWPS [2020-06-02 08:32:00,575] INFO: Status [processpaused]: Getting input reduceboxNorth of process transformation
+PyWPS [2020-06-02 08:32:00,577] INFO: Status [processpaused]: Getting input reduceboxSouth of process transformation
+PyWPS [2020-06-02 08:32:00,578] INFO: Status [processpaused]: Getting input reduceboxEast of process transformation
+PyWPS [2020-06-02 08:32:00,579] INFO: Status [processpaused]: Getting input reduceboxWest of process transformation
+PyWPS [2020-06-02 08:32:00,580] INFO: Status [processpaused]: Getting input selectVariables of process transformation
+PyWPS [2020-06-02 08:32:00,581] INFO: Status [processpaused]: Getting input interpolateMethod of process transformation
+PyWPS [2020-06-02 08:32:00,583] INFO: Status [processpaused]: Getting input interpolateProjString of process transformation
+PyWPS [2020-06-02 08:32:00,584] INFO: Status [processpaused]: Getting input interpolateXAxisMin of process transformation
+PyWPS [2020-06-02 08:32:00,585] INFO: Status [processpaused]: Getting input interpolateXAxisMax of process transformation
+PyWPS [2020-06-02 08:32:00,587] INFO: Status [processpaused]: Getting input interpolateYAxisMin of process transformation
+PyWPS [2020-06-02 08:32:00,588] INFO: Status [processpaused]: Getting input interpolateYAxisMax of process transformation
+PyWPS [2020-06-02 08:32:00,589] INFO: Status [processpaused]: Getting input interpolateHorSteps of process transformation
+PyWPS [2020-06-02 08:32:00,591] INFO: Status [processpaused]: Getting input interpolateVerSteps of process transformation
+PyWPS [2020-06-02 08:32:00,592] INFO: Status [processpaused]: Getting input interpolateXAxisUnits of process transformation
+PyWPS [2020-06-02 08:32:00,593] INFO: Status [processpaused]: Getting input interpolateYAxisUnits of process transformation
+PyWPS [2020-06-02 08:32:00,595] INFO: Status [processstarted][0.0]: Process transformation started
+PyWPS [2020-06-02 08:32:00,595] INFO: Size command: fimex --input.file=http://thredds.met.no/thredds/dodsC/aromearcticlatest/arome_arctic_pp_2_5km_latest.nc --input.type=nc --output.type=nc4 --extract.reduceTime.start=2018-02-20T06:00:00 --extract.reduceTime.end=2018-02-21T00:00:00 --extract.selectVariables=wind_speed_of_gust --extract.selectVariables=air_temperature_2m --interpolate.method=nearestneighbor --interpolate.projString=+proj=stere +lat_0=-90 +lon_0=0 +lat_ts=-71 +ellps=WGS84 +datum=WGS84 +units=m --interpolate.xAxisValues=16207098.2916,16506161.1418,...,46113383.3163 --interpolate.yAxisValues=26623574.2709,27276488.7471,...,91915021.8897 --interpolate.xAxisUnit=m --interpolate.yAxisUnit=m --output.printSize
+PyWPS [2020-06-02 08:32:00,596] INFO: Status [processstarted][0.0]: processstarted Fimex started
+PyWPS [2020-06-02 08:32:00,596] INFO: inCommand: python3 /usr/local/dev/fimex_transformation_python/fimex_transformation.py --input.file=http://thredds.met.no/thredds/dodsC/aromearcticlatest/arome_arctic_pp_2_5km_latest.nc --input.type=nc --output.type=nc4 --extract.reduceTime.start=2018-02-20T06:00:00 --extract.reduceTime.end=2018-02-21T00:00:00 --extract.selectVariables=wind_speed_of_gust --extract.selectVariables=air_temperature_2m --interpolate.method=nearestneighbor --interpolate.projString=+proj=stere +lat_0=-90 +lon_0=0 +lat_ts=-71 +ellps=WGS84 +datum=WGS84 +units=m --interpolate.xAxisValues=16207098.2916,16506161.1418,...,46113383.3163 --interpolate.yAxisValues=26623574.2709,27276488.7471,...,91915021.8897 --interpolate.xAxisUnit=m --interpolate.yAxisUnit=m --output.file=/var/www/html/wps/wpsoutputs/20200602083200_transform.nc
+PyWPS [2020-06-02 08:32:00,602] INFO: Status [processfailed]: Failed to execute WPS process [transformation]: 'exceptions.OSError' object has no attribute 'output'
+Traceback (most recent call last):
+  File "/tmp/pip-build-K9XqDG/pywps/pywps/Wps/Execute/__init__.py", line 675, in executeProcess
+  File "/usr/local/wps/processes/transformation.py", line 410, in execute
+    self.status.set('{}'.format(err.output,))
+AttributeError: 'exceptions.OSError' object has no attribute 'output'
+Traceback (most recent call last):
+  File "/tmp/pip-build-K9XqDG/pywps/pywps/Wps/Execute/__init__.py", line 390, in __init__
+  File "/tmp/pip-build-K9XqDG/pywps/pywps/Wps/Execute/__init__.py", line 695, in executeProcess
+NoApplicableCode: <?xml version="1.0" encoding="utf-8"?>
+<ExceptionReport version="1.0.0" xmlns="http://www.opengis.net/ows/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd">
+	<Exception exceptionCode="NoApplicableCode">
+		<ExceptionText>Failed to execute WPS process [transformation]: 'exceptions.OSError' object has no attribute 'output'</ExceptionText>
+	</Exception>
+</ExceptionReport>
+

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wps:ExecuteResponse xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd" service="WPS" version="1.0.0" xml:lang="en-CA" serviceInstance="http://localhost:9876/cgi-bin/pywps.cgi?service=WPS&amp;request=GetCapabilities&amp;version=1.0.0" statusLocation="http://localhost:9876/wps/wpsoutputs/pywps-d64564f8-a4aa-11ea-bb52-0242ac120002.xml">
+    <wps:Process wps:processVersion="0.1">
+        <ows:Identifier>transformation</ows:Identifier>
+        <ows:Title>Transformation</ows:Title>
+        <ows:Abstract>Transform inputfile according to specified input arguments, using fimex (https://wiki.met.no/fimex/start). Resultfile available as download from urlout.</ows:Abstract>
+    </wps:Process>
+    <wps:Status creationTime="2020-06-02T08:27:03Z">
+        <wps:ProcessFailed>
+            <ows:ExceptionReport version="1.0.0">
+                <ows:Exception exceptionCode="NoApplicableCode" locator="None">
+                    <ows:ExceptionText>Failed to execute WPS process [transformation]: 'exceptions.OSError' object has no attribute 'output'</ows:ExceptionText>
+                </ows:Exception>
+            </ows:ExceptionReport>
+        </wps:ProcessFailed>
+    </wps:Status>
+</wps:ExecuteResponse>
