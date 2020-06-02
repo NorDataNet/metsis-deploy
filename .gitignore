@@ -32,3 +32,4 @@ _build/
 vscode.code-workspace
 .vscode/settings.json
 volumes/pywps/prod/html/wps/wpsoutputs/*.xml
+volumes/pywps/prod/html/wps/wpsoutputs/*.tif
