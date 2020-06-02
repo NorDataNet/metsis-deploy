@@ -30,6 +30,7 @@ RUN apt-get update -y && apt-get install -y  \
 RUN pip2 install pywps==3.2.6
 
 RUN add-apt-repository -y ppa:met-norway/fimex && apt-get update && apt-cache search fimex && apt-get install -y fimex-0.65-bin python3-pyfimex0-0.65 python3-gdal # 
+RUN ln -s /usr/bin/fimex-0.65 /usr/bin/fimex
 
 EXPOSE 80 
 

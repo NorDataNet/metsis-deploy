@@ -31,4 +31,4 @@ _build/
 /volumes/jupyter/notebooks/git_ignore/
 vscode.code-workspace
 .vscode/settings.json
-volumes/pywps/prod/html/wps/wpsoutputs/pywps-4ab4d9dc-a4b4-11ea-aed0-0242ac18000b.xml
+volumes/pywps/prod/html/wps/wpsoutputs/*.xml

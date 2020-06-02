@@ -31,13 +31,14 @@ services:
     container_name: metsis_pywps_xenial
     image: epinux/metsis-pywps-xenial
     ports:
-      - "6000:80"
+      - "4040:80"
     volumes:
       - ./volumes/pywps/prod/html:/var/www/html
       - ./volumes/pywps/prod/apache2:/etc/apache2
       - ./volumes/pywps/prod/wps:/usr/local/wps
       - ./volumes/pywps/prod/cgi-bin:/usr/lib/cgi-bin
       - ./volumes/pywps/prod/dev:/usr/local/dev
+      - ./volumes/pywps/prod/html/wps/log/log.txt:/var/www/html/wps/log/log.txt
     restart: unless-stopped
 
 
@@ -193,7 +194,7 @@ services:
         PGADMIN_DEFAULT_EMAIL: mail@domain.net
         PGADMIN_DEFAULT_PASSWORD: pg_password
     ports:
-      - "4040:80"
+      - "6000:80"
     restart: unless-stopped
 
 volumes:
