@@ -17,41 +17,81 @@ services:
     volumes:
       - solr_data:/var/solr/data
       - ./volumes/solr/data:/tmp/data
-    restart: unless-stopped
+    restart: always
     entrypoint:
       - bash
       - "-c"
       - "precreate-core nbs-l1 /opt/solr/server/solr/configsets/myconfig ; precreate-core nbs-l2 /opt/solr/server/solr/configsets/myconfig; precreate-core nbs-thumbnail /opt/solr/server/solr/configsets/myconfig; exec solr -f"
 
-  drupal:
+
+  fimex-wps:
+    build:
+      context: ./metsis-pywps/
+      dockerfile: Dockerfile
+    container_name: metsis_pywps_xenial
+    image: epinux/metsis-pywps-xenial
+    ports:
+      - "4040:80"
+    volumes:
+      - ./volumes/pywps/prod/html:/var/www/html
+      - ./volumes/pywps/prod/apache2:/etc/apache2
+      - ./volumes/pywps/prod/wps:/usr/local/wps
+      - ./volumes/pywps/prod/cgi-bin:/usr/lib/cgi-bin
+      - ./volumes/pywps/prod/dev:/usr/local/dev
+      - ./volumes/pywps/prod/html/wps/log/log.txt:/var/www/html/wps/log/log.txt
+    restart: unless-stopped
+
+
+  pywps:
+    build:
+      context: ./metsis-pywps/
+      dockerfile: Dockerfile
+    container_name: metsis_pywps
+    image: epinux/metsis-pywps
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./volumes/pywps/processes:/pywps-flask/processes
+      - ./volumes/pywps/data:/pywps-flask/data
+      - ./volumes/pywps/outputs:/pywps-flask/outputs
+      - ./volumes/pywps/pywps-flask/demo.py:/pywps-flask/demo.py
+      - ./volumes/pywps/pywps-flask/wsgi/pywps.wsgi:/pywps-flask/wsgi/pywps.wsgi
+      - ./volumes/pywps/pywps-flask/pywps.cfg:/pywps-flask/pywps.cfg
+    restart: unless-stopped
+
+  drupal7:
     build:
       context: ./metsis-drupal/
       dockerfile: Dockerfile
-    container_name: metsis_drupal
-    image: epinux/metsis-drupal
+    container_name: metsis_drupal7
+    image: epinux/metsis-drupal7
     depends_on:
       - postgres
     ports:
       - "7070:80"
     volumes:
-      - drupal_data:/var/www/html
+      - drupal7_data:/var/www/html
       - ./volumes/drupal7/sites/all/modules/metsis_ts_bokeh:/var/www/html/sites/all/modules/metsis_ts_bokeh
     restart: always
     links:
       - fastapi
 
-  fastapi:
+  drupal8:
     build:
-      context: ./metsis-fastapi/
-      dockerfile: Dockerfile
-    container_name: metsis_fastapi
-    image: epinux/metsis-fastapi
+      context: ./metsis-drupal/
+      dockerfile: Dockerfile-drupal8
+    container_name: metsis_drupal8
+    image: epinux/metsis-drupal8
+    depends_on:
+      - postgres
     ports:
-      - "7000:80"
-    restart: always
+      - "8080:80"
     volumes:
-      - ./volumes/fastapi/pybasket/config.yaml:/opt/basket/config.yaml
-      - ./volumes/fastapi/pybasket/app:/app
+      - drupal8_data:/var/www/html
+      - ./volumes/drupal8/metsis_ts_bokeh:/var/www/html/modules/metsis_ts_bokeh
+    restart: always
+    links:
+      - fastapi
 
   postgres:
     build:
@@ -63,7 +103,7 @@ services:
     hostname: postgres
     environment:
       POSTGRES_INITDB_ARGS: "-E UTF8"
-      POSTGRES_DB: drupal_db,csw_db,metsis_test
+      POSTGRES_DB: drupal7_db,csw_db,drupal8_db
       POSTGRES_USER: metsis_user
       POSTGRES_PASSWORD: metsis_password
       LANGUAGE: "en_US.UTF-8"
@@ -74,12 +114,101 @@ services:
     ports:
       - "5432:5432"
 
+  fastapi:
+    build:
+      context: ./metsis-fastapi/
+      dockerfile: Dockerfile
+    container_name: metsis_fastapi
+    image: epinux/metsis-fastapi
+    environment:
+      # TODO:
+      # needs a better solution, some hints:
+      # https://stackoverflow.com/questions/25862071/accessing-os-environment-variables-from-jinja2-template
+      # changing theurl below affects the download.html template
+      DOWNLOAD_DIR: "/app/static/download"
+    ports:
+      - "7000:80"
+    restart: always
+    volumes:
+      # - ./volumes/fastapi/pybasket/config.yaml:/opt/basket/config.yaml
+      # - ./volumes/fastapi/pybasket/app:/app
+      - ./volumes/fastapi/ncplot/app:/app
+
+  hyrax:
+    build:
+      context: ./metsis-hyrax/
+      dockerfile: Dockerfile
+    container_name: metsis_hyrax
+    image: epinux/metsis-hyrax
+    ports:
+      - "9090:8080"
+    volumes:
+      - ./volumes/pydap/data:/usr/share/hyrax
+    restart: always
+
+  pydap:
+    build:
+      context: ./metsis-pydap/
+      dockerfile: Dockerfile
+    container_name: metsis_pydap
+    image: epinux/metsis-pydap
+    ports:
+      - "9999:80"
+    volumes:
+      - ./volumes/pydap/data:/var/www/localhost/pydap/data
+    restart: unless-stopped
+
+  jupyter:
+    build:
+      context: ./metsis-jupyter/
+      dockerfile: Dockerfile
+    container_name:  metsis_jupyter
+    image:  epinux/metsis-jupyter
+    ports:
+      - "444:443"
+    volumes:
+      - ./volumes/jupyter/notebooks:/root/notebooks/
+    restart: unless-stopped
+
+  pycsw:
+    build:
+      context: ./metsis-pycsw/
+      dockerfile: Dockerfile
+    container_name:  metsis_pycsw
+    image:  epinux/metsis-pycsw
+    ports:
+      - "8000:8000"
+    environment:
+      PYCSW_CONFIG: /etc/pycsw/pycsw.cfg
+    volumes:
+      - ./volumes/pycsw/conf/pycsw.cfg:/etc/pycsw/pycsw.cfg
+      - ./volumes/pycsw/commands/pycsw_setup.sh:/usr/local/bin/pycsw_setup.sh
+      - ./volumes/pycsw/commands/mmd2isofix.py:/usr/local/bin/mmd2isofix.py
+      - ./volumes/pycsw/commands/mmd-to-iso.xsl:/usr/local/share/mmd-to-iso.xsl
+    restart: unless-stopped
+
+  pgadmin:
+    container_name:  pgadmin4
+    image:  dpage/pgadmin4
+    environment:
+        PGADMIN_DEFAULT_EMAIL: mail@domain.net
+        PGADMIN_DEFAULT_PASSWORD: pg_password
+    ports:
+      - "6000:80"
+    restart: unless-stopped
+
 volumes:
   solr_data:
     name: solr_data
-  drupal_data:
-    name: drupal_data
-  pybasket_data:
-    name: pybasket_data
   postgres_data:
     name: postgres_data
+  drupal7_data:
+    name: drupal7_data
+  drupal8_data:
+    name: drupal8_data
+  pybasket_data:
+    name: pybasket_data
+  pywps_data:
+    name: pywps_data
+  pydap_data:
+    name: pydap_data
