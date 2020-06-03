@@ -1,0 +1,18 @@
+version: '3.5'
+services:
+  fimex-wps:
+    build:
+      context: ./metsis-pywps/
+      dockerfile: Dockerfile
+    container_name: metsis_pywps_xenial
+    image: epinux/metsis-pywps-xenial
+    ports:
+      - "9876:80"
+    volumes:
+      - ./volumes/pywps/prod/html:/var/www/html
+      - ./volumes/pywps/prod/apache2:/etc/apache2
+      - ./volumes/pywps/prod/wps:/usr/local/wps
+      - ./volumes/pywps/prod/cgi-bin:/usr/lib/cgi-bin
+      - ./volumes/pywps/prod/dev:/usr/local/dev
+      - ./volumes/pywps/prod/html/wps/log/log.txt:/var/www/html/wps/log/log.txt
+    restart: unless-stopped
