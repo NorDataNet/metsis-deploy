@@ -225,7 +225,10 @@ def create_vp_plot(data):
 
 def create_page(data, metadata=True):
     if data.dataset_metadata['featureType'] == 'timeSeries':
-        plot = create_ts_plot(data)
+        try:
+            plot = create_ts_plot(data)
+        except AttributeError:
+            plot = create_vp_plot(data)
     if data.dataset_metadata['featureType'] == 'profile':
         plot = create_vp_plot(data)
     if data.dataset_metadata['featureType'] == 'timeSeriesProfile':

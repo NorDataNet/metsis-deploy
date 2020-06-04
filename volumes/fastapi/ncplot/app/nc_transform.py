@@ -8,7 +8,9 @@ def get_plottable_variables(nc_url):
     ds = xr.open_dataset(nc_url)
     num_dims = len(ds.dims)
     num_coords = len(ds.coords)
-    if num_dims >= 2 and num_coords >=2:
+    valid_dims = [i for i in ds.dims if np.unique(ds[i]).shape[0] != 1]
+    valid_coords = [i for i in ds.dims if np.unique(ds[i]).shape[0] != 1]
+    if num_dims >= 2 and num_coords >=2 or len(valid_dims) != num_dims:
         axis_name = 'x_axis'
     else:
         axis_name = 'y_axis'
