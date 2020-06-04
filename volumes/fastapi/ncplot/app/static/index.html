@@ -43,7 +43,7 @@
 <div id="ncinput_submit" class="Column">
   <button onclick="getParam()">Get variables</button>
 </div>
-<select id="var_selector" name="source" onchange="myFunction()" class="Column">
+<select id="var_selector" name="source" onchange="getPlot()" class="Column">
      <option>Choose a variable</option>
 </select>
 
@@ -92,7 +92,7 @@ function getParam() {
 </script>
 
     <script>
-        function myFunction() {
+        function getPlot() {
             var nc_url = document.getElementById("nc");
             document.getElementById('tsplot').innerHTML = "";
             document.getElementById("loader").style.display = "block";
