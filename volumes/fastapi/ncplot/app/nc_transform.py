@@ -9,14 +9,17 @@ def get_plottable_variables(nc_url):
     num_dims = len(ds.dims)
     num_coords = len(ds.coords)
     valid_dims = [i for i in ds.dims if np.unique(ds[i]).shape[0] != 1]
-    valid_coords = [i for i in ds.dims if np.unique(ds[i]).shape[0] != 1]
-    if num_dims >= 2 and num_coords >=2 or len(valid_dims) != num_dims:
+    valid_coords = [i for i in ds.coords if np.unique(ds[i]).shape[0] != 1]
+    var_list = [i for i in ds if len(ds[i].shape) == num_coords if list(ds[i].dims) == valid_coords]
+    if len(var_list)<= 0:
+        var_list = [i for i in ds if len(ds[i].values.shape) != 0 if list(ds[i].dims) == valid_coords]
+    if len(var_list)<= 0:
+        var_list = [i for i in ds if len(ds[i].shape) == num_coords if list(ds[i].dims) == valid_dims]       
+    if all(len(ds[i].coords) == len(valid_coords) for i in var_list) and num_dims >= 2 and num_coords >=2 or len(valid_dims) != num_dims:
         axis_name = 'x_axis'
     else:
         axis_name = 'y_axis'
-    var_dict = {axis_name: [i for i in ds if len(ds[i].shape) == num_coords]}
-    if len(var_dict[axis_name]) <= 0:
-        var_dict = {axis_name: [i for i in ds if len(ds[i].values.shape) != 0]}
+    var_dict = {axis_name: var_list}
     return var_dict
 
 
@@ -88,7 +91,7 @@ def get_nc_data(nc_url, nc_variable=None, resample=None):
         data.variable_metadata = {i: ds[i].attrs for i in ds}
 
     if 'featureType' not in data.dataset_metadata:
-        if len(ds.dims) == 1:
+        if len(ds.dims) == 1 and 'time' in [i.lower() for i in list(ds.dims)]:
             data.dataset_metadata['featureType'] = 'timeSeries'
     return data
 
