@@ -1,0 +1,1 @@
+curl 'http://localhost:8983/solr/<core>/update?commit=true' --data-binary @sampledata/sample1.json -H 'Content-type:application/json'
